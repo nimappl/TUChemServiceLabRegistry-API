@@ -2,13 +2,13 @@ package com.nima.tuchemservicelabregistryapi.model;
 import java.util.List;
 
 public class Test {
-    private long id;
+    private Long id;
     private String name;
     private String shortName;
-    private byte hasPrep;
-    private long instrumentId;
+    private Byte hasPrep;
+    private Long instrumentId;
     private Instrument instrument;
-    private byte tActive;
+    private Boolean tActive;
     private String description;
     private List<TestPrep> samplePreparations;
     private List<TestFee> fees;
@@ -16,7 +16,7 @@ public class Test {
 
     public Test() {}
 
-    public Test(long id, String name, String shortName, byte hasPrep, long instrumentId, Instrument instrument, byte tActive, String description, List<TestPrep> samplePreparations, List<TestFee> fees, List<Discount> discounts) {
+    public Test(Long id, String name, String shortName, Byte hasPrep, Long instrumentId, Instrument instrument, Boolean tActive, String description, List<TestPrep> samplePreparations, List<TestFee> fees, List<Discount> discounts) {
         this.id = id;
         this.name = name;
         this.shortName = shortName;
@@ -30,19 +30,19 @@ public class Test {
         this.discounts = discounts;
     }
 
-    public long getInstrumentId() {
+    public Long getInstrumentId() {
         return instrumentId;
     }
 
-    public void setInstrumentId(long instrumentId) {
+    public void setInstrumentId(Long instrumentId) {
         this.instrumentId = instrumentId;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -62,11 +62,11 @@ public class Test {
         this.shortName = shortName;
     }
 
-    public byte getHasPrep() {
+    public Byte getHasPrep() {
         return hasPrep;
     }
 
-    public void setHasPrep(byte hasPrep) {
+    public void setHasPrep(Byte hasPrep) {
         this.hasPrep = hasPrep;
     }
 
@@ -78,11 +78,11 @@ public class Test {
         this.instrument = instrument;
     }
 
-    public byte gettActive() {
+    public Boolean gettActive() {
         return tActive;
     }
 
-    public void settActive(byte tActive) {
+    public void settActive(Boolean tActive) {
         this.tActive = tActive;
     }
 
@@ -116,5 +116,22 @@ public class Test {
 
     public void setDiscounts(List<Discount> discounts) {
         this.discounts = discounts;
+    }
+
+    @Override
+    public String toString() {
+        return "Test{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", shortName='" + shortName + '\'' +
+                ", hasPrep=" + hasPrep +
+                ", instrumentId=" + instrumentId +
+                ", instrument=" + instrument +
+                ", tActive=" + tActive +
+                ", description='" + description + '\'' +
+                ", samplePreparations=" + samplePreparations +
+                ", fees=" + fees +
+                ", discounts=" + discounts +
+                '}';
     }
 }

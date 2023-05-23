@@ -4,17 +4,18 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public class Service {
-    private long id;
+    private Long id;
     private Timestamp date;
-    private int sampleQuantity;
-    private int testTime;
-    private double price;
-    private byte hasSamplePrep;
+    private Integer sampleQuantity;
+    private Integer testTime;
+    private Long price;
+    private Byte hasSamplePrep;
     private Test test;
     private TestFee testFee;
+    private List<TestPrep> testPrep;
     private LabPersonnel servingPersonnel;
     private Customer customer;
-    private byte settlementStatus;
+    private Byte settlementStatus;
     private List<ServiceResultFile> resultFiles;
     private List<Discount> discounts;
     private List<Payment> payments;
@@ -22,7 +23,7 @@ public class Service {
 
     public Service() {}
 
-    public Service(long id, Timestamp date, int sampleQuantity, int testTime, double price, byte hasSamplePrep, Test test, TestFee testFee, LabPersonnel servingPersonnel, Customer customer, byte settlementStatus, List<ServiceResultFile> resultFiles, List<Discount> discounts, List<Payment> payments, String considerations) {
+    public Service(Long id, Timestamp date, Integer sampleQuantity, Integer testTime, Long price, Byte hasSamplePrep, Test test, TestFee testFee, List<TestPrep> testPrep, LabPersonnel servingPersonnel, Customer customer, Byte settlementStatus, List<ServiceResultFile> resultFiles, List<Discount> discounts, List<Payment> payments, String considerations) {
         this.id = id;
         this.date = date;
         this.sampleQuantity = sampleQuantity;
@@ -31,6 +32,7 @@ public class Service {
         this.hasSamplePrep = hasSamplePrep;
         this.test = test;
         this.testFee = testFee;
+        this.testPrep = testPrep;
         this.servingPersonnel = servingPersonnel;
         this.customer = customer;
         this.settlementStatus = settlementStatus;
@@ -40,11 +42,11 @@ public class Service {
         this.considerations = considerations;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -56,35 +58,35 @@ public class Service {
         this.date = date;
     }
 
-    public int getSampleQuantity() {
+    public Integer getSampleQuantity() {
         return sampleQuantity;
     }
 
-    public void setSampleQuantity(int sampleQuantity) {
+    public void setSampleQuantity(Integer sampleQuantity) {
         this.sampleQuantity = sampleQuantity;
     }
 
-    public int getTestTime() {
+    public Integer getTestTime() {
         return testTime;
     }
 
-    public void setTestTime(int testTime) {
+    public void setTestTime(Integer testTime) {
         this.testTime = testTime;
     }
 
-    public double getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
-    public byte getHasSamplePrep() {
+    public Byte getHasSamplePrep() {
         return hasSamplePrep;
     }
 
-    public void setHasSamplePrep(byte hasSamplePrep) {
+    public void setHasSamplePrep(Byte hasSamplePrep) {
         this.hasSamplePrep = hasSamplePrep;
     }
 
@@ -98,6 +100,14 @@ public class Service {
 
     public TestFee getTestFee() {
         return testFee;
+    }
+
+    public List<TestPrep> getTestPrep() {
+        return testPrep;
+    }
+
+    public void setTestPrep(List<TestPrep> testPrep) {
+        this.testPrep = testPrep;
     }
 
     public void setTestFee(TestFee testFee) {
@@ -120,11 +130,11 @@ public class Service {
         this.customer = customer;
     }
 
-    public byte getSettlementStatus() {
+    public Byte getSettlementStatus() {
         return settlementStatus;
     }
 
-    public void setSettlementStatus(byte settlementStatus) {
+    public void setSettlementStatus(Byte settlementStatus) {
         this.settlementStatus = settlementStatus;
     }
 

@@ -3,22 +3,22 @@ package com.nima.tuchemservicelabregistryapi.model;
 import java.sql.Timestamp;
 
 public class PaymentCashBasis extends Payment {
-    private short type;
+    private Short type;
     private String trackingNo;
 
     public PaymentCashBasis() {}
 
-    public PaymentCashBasis(long id, Timestamp date, double amount, long serviceId, short type, String trackingNo) {
+    public PaymentCashBasis(Long id, Timestamp date, Long amount, Long serviceId, Short type, String trackingNo) {
         super(id, date, amount, serviceId);
         this.type = type;
         this.trackingNo = trackingNo;
     }
 
-    public short getType() {
+    public Short getType() {
         return type;
     }
 
-    public void setType(short type) {
+    public void setType(Short type) {
         this.type = type;
     }
 

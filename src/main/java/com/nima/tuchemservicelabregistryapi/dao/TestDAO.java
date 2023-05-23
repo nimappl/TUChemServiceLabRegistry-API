@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class TestDAO implements DAO<Test> {
@@ -20,7 +19,7 @@ public class TestDAO implements DAO<Test> {
         test.setShortName(rs.getString("TShortName"));
         test.setHasPrep(rs.getByte("THasPrep"));
         test.setInstrumentId(rs.getLong("InstrumentID"));
-        test.settActive(rs.getByte("TActive"));
+        test.settActive(rs.getBoolean("TActive"));
         test.setDescription(rs.getString("TDescription"));
         return test;
     };
@@ -39,36 +38,10 @@ public class TestDAO implements DAO<Test> {
 
     @Override
     public Data<Test> list(Data<Test> template) {
-        boolean firstFilter = true;
-        String queryBody = "";
-        String countQuery = "SELECT COUNT(*) FROM testv";
-        String selectQuery = "SELECT * FROM testv";
-
-        // WHERE clause for each of filters
-        for (Filter filter : template.filters) {
-            if (firstFilter) { queryBody += " WHERE "; firstFilter = false; }
-            else queryBody += " AND ";
-            queryBody += filter.key + " LIKE \"%" + filter.value + "%\" ";
-        }
-        countQuery += queryBody;
-
-        // ORDER BY
-        if (template.sortBy != null) {
-            String sortType = template.sortType == 0 ? "ASC " : "DESC ";
-            queryBody += " ORDER BY " + template.sortBy + " " + sortType;
-        }
-
-        // PAGINATION
-        if (template.pageSize != 0) {
-            queryBody += " LIMIT " + template.pageSize + " OFFSET " + ((template.pageNumber - 1) * template.pageSize);
-        }
-        selectQuery += queryBody;
-
-        template.count = jdbcTemplate.queryForObject(countQuery, Integer.class);
-        template.records = jdbcTemplate.query(selectQuery, rowMapper);
-
+        template.count = jdbcTemplate.queryForObject(template.countQuery("vTest", "TestID"), Integer.class);
+        template.records = jdbcTemplate.query(template.selectQuery("vTest", "TestID"), rowMapper);
         template.records.forEach((Test test) -> {
-            test.setInstrument(instrumentDao.getById(test.getInstrumentId()).get());
+            test.setInstrument(instrumentDao.getById(test.getInstrumentId()));
             test.setDiscounts(discountDao.discountsOfTest(test.getId()));
             test.setFees(testFeeDao.getByTestId(test.getId()));
             test.setSamplePreparations(testPrepDao.getByTestId(test.getId()));
@@ -78,9 +51,9 @@ public class TestDAO implements DAO<Test> {
     }
 
     @Override
-    public Optional<Test> getById(Long id) {
+    public Test getById(Long id) {
         String sql = "SELECT * FROM Test WHERE TestID = ?";
-        Test test = null;
+        Test test = new Test();
         try {
             test = jdbcTemplate.queryForObject(sql, new Object[]{id}, rowMapper);
             test.setDiscounts(discountDao.discountsOfTest(test.getId()));
@@ -89,39 +62,36 @@ public class TestDAO implements DAO<Test> {
         } catch (DataAccessException ex) {
             System.out.println("Item not found: " + id);
         }
-        return Optional.ofNullable(test);
+        return test;
     }
 
     @Override
     public int create(Test test) {
-        long newId = jdbcTemplate.queryForObject("SELECT CreateTest(?,?,?,?,?)",
-                new Object[]{test.getName(), test.getShortName(), test.getInstrumentId(), test.gettActive(), test.getDescription()},
+        long newTestId = jdbcTemplate.queryForObject("EXEC CreateTest @name=?, @shortName=?, @hasPrep=?, @instId=?, @active=?, @description=?",
+                new Object[]{test.getName(), test.getShortName(), test.getHasPrep(), test.getInstrumentId(), test.gettActive(), test.getDescription()},
                 Long.class);
 
-        if (test.getSamplePreparations() != null) test.getSamplePreparations().forEach(prep -> {
-            prep.setTestId(newId);
+        test.getSamplePreparations().forEach(prep -> {
+            prep.setTestId(newTestId);
             testPrepDao.create(prep);
         });
-        if (test.getFees() != null) test.getFees().forEach(fee -> {
-            fee.setTestId(newId);
+        test.getFees().forEach(fee -> {
+            fee.setTestId(newTestId);
             testFeeDao.create(fee);
         });
-        if (test.getDiscounts() != null) {
-            test.getDiscounts().forEach((Discount discount) -> {
-//                Optional<Discount> d = discountDao.getById(discount.getId());
-//
-//                if (d.isEmpty()) discountDao.create(discount);
-                jdbcTemplate.update("INSERT INTO Test_Discount(TestID, DiscountID) VALUES (?,?)",
-                        newId, discount.getId());
-            });
-        }
+        test.getDiscounts().forEach((Discount discount) -> {
+            jdbcTemplate.update("INSERT INTO Test_Discount(TestID, DiscountID) VALUES (?,?)", newTestId, discount.getId());
+        });
         return 1;
     }
 
     @Override
     public int update(Test test) {
-        // Discounts
         List<Discount> discountsInDB = discountDao.discountsOfTest(test.getId());
+        List<TestFee> feesInDB = testFeeDao.getByTestId(test.getId());
+        List<TestPrep> prepsInDb = testPrepDao.getByTestId(test.getId());
+
+        // Discounts
         discountsInDB.forEach((Discount discount) -> {
             if (!test.getDiscounts().contains(discount)) { // removed discounts
                 jdbcTemplate.update("DELETE FROM Test_Discount WHERE TestID=? AND DiscountID=?",
@@ -130,9 +100,7 @@ public class TestDAO implements DAO<Test> {
         });
         if (test.getDiscounts() != null) {
             test.getDiscounts().forEach((Discount discount) -> {
-                if (!discountsInDB.contains(discount)) { // new discounts added
-                    if (discountDao.getById(discount.getId()).isEmpty())
-                        discountDao.create(discount);
+                if (!discountsInDB.contains(discount)) { // new discounts
                     jdbcTemplate.update("INSERT INTO Test_Discount(TestID, DiscountID) VALUES(?,?)",
                             test.getId(), discount.getId());
                 }
@@ -140,56 +108,38 @@ public class TestDAO implements DAO<Test> {
         }
 
         // Fees
-        List<TestFee> feesInDB = testFeeDao.getByTestId(test.getId());
         feesInDB.forEach((TestFee feeInDb) -> {
             boolean isRemoved = true;
             for (TestFee fee : test.getFees()) {
-                if (feeInDb.getId() == fee.getId()) {
+                if (feeInDb.getId().equals(fee.getId())) {
+                    if (!feeInDb.isEqualTo(fee))
+                        testFeeDao.update(fee);
                     isRemoved = false;
                     break;
                 }
             }
             if (isRemoved) testFeeDao.delete(feeInDb.getId());
         });
-        if (test.getFees() != null) {
-            test.getFees().forEach((TestFee fee) -> {
-                boolean isPresentInDb = false;
-                for (TestFee feeInDb : feesInDB) {
-                    if (fee.getId() == feeInDb.getId()) {
-                        isPresentInDb = true;
-                        break;
-                    }
-                }
-                if (isPresentInDb) testFeeDao.update(fee);
-                else testFeeDao.create(fee);
-            });
-        }
+        test.getFees().forEach((TestFee fee) -> {
+            if (fee.getId() == null) testFeeDao.create(fee);
+        });
 
         // Sample Preps
-        List<TestPrep> prepsInDb = testPrepDao.getByTestId(test.getId());
         prepsInDb.forEach((TestPrep prepInDb) -> {
             boolean isRemoved = true;
             for (TestPrep prep : test.getSamplePreparations()) {
                 if (prepInDb.getId() == prep.getId()) {
+                    if (!prepInDb.isEqualTo(prep))
+                        testPrepDao.update(prep);
                     isRemoved = false;
                     break;
                 }
             }
             if (isRemoved) testPrepDao.delete(prepInDb.getId());
         });
-        if (test.getSamplePreparations() != null) {
-            test.getSamplePreparations().forEach((TestPrep prep) -> {
-                boolean isPresentInDb = false;
-                for (TestPrep prepInDb : prepsInDb) {
-                    if (prep.getId() == prepInDb.getId()) {
-                        isPresentInDb = true;
-                        break;
-                    }
-                }
-                if (isPresentInDb) testPrepDao.update(prep);
-                else testPrepDao.create(prep);
-            });
-        }
+        test.getSamplePreparations().forEach((TestPrep prep) -> {
+            if (prep.getId() == null) testPrepDao.create(prep);
+        });
 
         return jdbcTemplate.update("UPDATE Test SET TName=?, TShortName=?, InstrumentID=?, TActive=?, TDescription=? WHERE TestID=?",
                 test.getName(), test.getShortName(), test.getInstrumentId(), test.gettActive(), test.getDescription(), test.getId());
@@ -201,9 +151,9 @@ public class TestDAO implements DAO<Test> {
 
     @Override
     public int delete(Long id) {
-        jdbcTemplate.update("UPDATE TestFee SET DDate=CURRENT_TIMESTAMP() WHERE TestID=?", id);
-        jdbcTemplate.update("UPDATE TestPrep SET DDate=CURRENT_TIMESTAMP() WHERE TestID=?", id);
+        jdbcTemplate.update("UPDATE TestFee SET DDate=GETDATE() WHERE TestID=?", id);
+        jdbcTemplate.update("UPDATE TestPrep SET DDate=GETDATE() WHERE TestID=?", id);
         jdbcTemplate.update("DELETE FROM Test_Discount WHERE TestID=?", id);
-        return jdbcTemplate.update("CALL DeleteTest(?)", id);
+        return jdbcTemplate.update("UPDATE Test SET DDate=GETDATE() WHERE TestID=?", id);
     }
 }

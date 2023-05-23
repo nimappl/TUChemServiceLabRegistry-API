@@ -2,18 +2,18 @@ package com.nima.tuchemservicelabregistryapi.model;
 import java.util.List;
 
 public class Organization {
-    private long id;
+    private Long id;
     private String name;
     private String nationalId;
     private String registrationNo;
     private String contractNo;
     private List<OrgPhoneNumber> phoneNumbers;
     private List<OrgRepresentative> representatives;
-    private long customerId;
+    private Long customerId;
 
     public Organization() {}
 
-    public Organization(long id, String name, String nationalId, String registrationNo, String contractNo, List<OrgPhoneNumber> phoneNumbers, List<OrgRepresentative> representatives, long customerId) {
+    public Organization(Long id, String name, String nationalId, String registrationNo, String contractNo, List<OrgPhoneNumber> phoneNumbers, List<OrgRepresentative> representatives, Long customerId) {
         this.id = id;
         this.name = name;
         this.nationalId = nationalId;
@@ -24,11 +24,11 @@ public class Organization {
         this.customerId = customerId;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -80,11 +80,15 @@ public class Organization {
         this.representatives = representatives;
     }
 
-    public long getCustomerId() {
+    public Long getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(long customerId) {
+    public void setCustomerId(Long customerId) {
         this.customerId = customerId;
+    }
+
+    public boolean isEqualTo(Organization o) {
+        return name.equals(o.getName()) && nationalId.equals(o.getName()) && registrationNo.equals(o.getRegistrationNo()) && contractNo.equals(o.getContractNo()) && customerId.equals(o.getCustomerId());
     }
 }

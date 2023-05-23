@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.http.HttpResponse;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -40,7 +39,7 @@ public class TestController {
     public ResponseEntity<Test> getById(@PathVariable("id") Long id) {
         Test test;
         try {
-            test = this.dao.getById(id).get();
+            test = this.dao.getById(id);
         } catch (NoSuchElementException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

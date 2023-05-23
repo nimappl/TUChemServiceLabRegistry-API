@@ -1,21 +1,21 @@
 package com.nima.tuchemservicelabregistryapi.model;
 
 public class EduGroup {
-    private long id;
+    private Long id;
     private String name;
 
     public EduGroup() {}
 
-    public EduGroup(long id, String name) {
+    public EduGroup(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

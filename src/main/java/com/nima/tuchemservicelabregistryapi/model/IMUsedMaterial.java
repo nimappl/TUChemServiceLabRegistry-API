@@ -1,17 +1,19 @@
 package com.nima.tuchemservicelabregistryapi.model;
 
+import java.util.Objects;
+
 public class IMUsedMaterial {
-    private long id;
+    private Long id;
     private String name;
     private String manufacturer;
-    private double price;
-    private long maintenanceId;
-    private double quantity;
-    private short type;
+    private Long price;
+    private Long maintenanceId;
+    private Double quantity;
+    private Short type;
 
     public IMUsedMaterial() {}
 
-    public IMUsedMaterial(long id, String name, String manufacturer, double price, long maintenanceId, double quantity, short type) {
+    public IMUsedMaterial(Long id, String name, String manufacturer, Long price, Long maintenanceId, Double quantity, Short type) {
         this.id = id;
         this.name = name;
         this.manufacturer = manufacturer;
@@ -21,11 +23,11 @@ public class IMUsedMaterial {
         this.type = type;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -45,35 +47,65 @@ public class IMUsedMaterial {
         this.manufacturer = manufacturer;
     }
 
-    public double getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
-    public long getMaintenanceId() {
+    public Long getMaintenanceId() {
         return maintenanceId;
     }
 
-    public void setMaintenanceId(long maintenanceId) {
+    public void setMaintenanceId(Long maintenanceId) {
         this.maintenanceId = maintenanceId;
     }
 
-    public double getQuantity() {
+    public Double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(double quantity) {
+    public void setQuantity(Double quantity) {
         this.quantity = quantity;
     }
 
-    public short getType() {
+    public Short getType() {
         return type;
     }
 
-    public void setType(short type) {
+    public void setType(Short type) {
         this.type = type;
+    }
+
+    public boolean isEqualTo(IMUsedMaterial m) {
+        return id.equals(m.getId()) && name.equals(m.getName()) && manufacturer.equals(m.manufacturer) && price.equals(m.price) && maintenanceId.equals(m.maintenanceId) && quantity.equals(m.quantity) && type.equals(m.type);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IMUsedMaterial that = (IMUsedMaterial) o;
+        return Objects.equals(getId(), that.getId()) && getName().equals(that.getName()) && Objects.equals(getManufacturer(), that.getManufacturer()) && getPrice().equals(that.getPrice()) && Objects.equals(getMaintenanceId(), that.getMaintenanceId()) && Objects.equals(getQuantity(), that.getQuantity()) && Objects.equals(getType(), that.getType());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName(), getManufacturer(), getPrice(), getMaintenanceId(), getQuantity(), getType());
+    }
+
+    @Override
+    public String toString() {
+        return "IMUsedMaterial{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", price=" + price +
+                ", maintenanceId=" + maintenanceId +
+                ", quantity=" + quantity +
+                ", type=" + type +
+                '}';
     }
 }

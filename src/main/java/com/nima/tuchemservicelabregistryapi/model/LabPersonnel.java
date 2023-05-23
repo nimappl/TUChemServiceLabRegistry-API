@@ -3,12 +3,12 @@ package com.nima.tuchemservicelabregistryapi.model;
 public class LabPersonnel extends Person {
     private String personnelCode;
     private String post;
-    private short role;
+    private Short role;
 
     public LabPersonnel() {}
 
-    public LabPersonnel(long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, byte gender, long customerId, String username, String password, String personnelCode, String post, short role) {
-        super(id, nationalNumber, firstName, lastName, phoneNumber, email, gender, customerId, (short) 1, username, password);
+    public LabPersonnel(Long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, Boolean gender, Long customerId, Boolean typeStdn, Boolean typeProf, Boolean typeLab, Boolean typeOrg, String username, String password, String personnelCode, String post, Short role) {
+        super(id, nationalNumber, firstName, lastName, phoneNumber, email, gender, customerId, typeStdn, typeProf, typeLab, typeOrg, username, password);
         this.personnelCode = personnelCode;
         this.post = post;
         this.role = role;
@@ -30,11 +30,11 @@ public class LabPersonnel extends Person {
         this.post = post;
     }
 
-    public short getRole() {
+    public Short getRole() {
         return role;
     }
 
-    public void setRole(short role) {
+    public void setRole(Short role) {
         this.role = role;
     }
 }

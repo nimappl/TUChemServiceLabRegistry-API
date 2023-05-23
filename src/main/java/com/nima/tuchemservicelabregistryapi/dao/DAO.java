@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public interface DAO<T> {
     Data<T> list(Data<T> template);
-    Optional<T> getById(Long id);
+    T getById(Long id);
     int create(T t);
     int update(T t);
     int delete(Long id);

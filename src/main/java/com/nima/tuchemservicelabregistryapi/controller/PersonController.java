@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -34,11 +35,17 @@ public class PersonController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
+    @GetMapping("/query-by-full-name/{fullName}")
+    public ResponseEntity<List<Person>> queryByFullName(@PathVariable("fullName") String name) {
+        List<Person> result = dao.queryByFullName(name);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Person> getById(@PathVariable("id") Long id) {
         Person person;
         try {
-            person = this.dao.getById(id).get();
+            person = this.dao.getById(id);
         } catch (NoSuchElementException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -47,19 +54,20 @@ public class PersonController {
 
     @PostMapping("/new")
     public ResponseEntity createPerson(@RequestBody Person person) {
-        if (dao.create(person) == 1) return new ResponseEntity(HttpStatus.CREATED);
-        return new ResponseEntity((HttpStatus.NOT_MODIFIED));
+        int newId;
+        if ((newId = dao.create(person)) > 0) return new ResponseEntity<Integer>(newId, HttpStatus.CREATED);
+        return new ResponseEntity(HttpStatus.NOT_MODIFIED);
     }
 
     @PutMapping("/update")
     public ResponseEntity updatePerson(@RequestBody Person person) {
         if (dao.update(person) == 1)  return new ResponseEntity(HttpStatus.OK);
-        return new ResponseEntity((HttpStatus.NOT_MODIFIED));
+        return new ResponseEntity(HttpStatus.NOT_MODIFIED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deletePerson(@PathVariable("id") Long id) {
         if (dao.delete(id) == 1) return new ResponseEntity(HttpStatus.OK);
-        return new ResponseEntity((HttpStatus.NOT_MODIFIED));
+        return new ResponseEntity(HttpStatus.NOT_MODIFIED);
     }
 }

@@ -38,7 +38,7 @@ public class EduFieldController {
     public ResponseEntity<EduField> getById(@PathVariable("id") Long id) {
         EduField eduField;
         try {
-            eduField = this.dao.getById(id).get();
+            eduField = this.dao.getById(id);
         } catch (NoSuchElementException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

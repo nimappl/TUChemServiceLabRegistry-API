@@ -1,27 +1,25 @@
 package com.nima.tuchemservicelabregistryapi.model;
 
 public class EduField {
-    private long id;
+    private Long id;
     private String name;
-    private short fieldLevel;
-    private long eduGroupId;
+    private Long eduGroupId;
     private EduGroup eduGroup;
 
     public EduField() {}
 
-    public EduField(long id, String name, short fieldLevel, long eduGroupId, EduGroup eduGroup) {
+    public EduField(Long id, String name, Long eduGroupId, EduGroup eduGroup) {
         this.id = id;
         this.name = name;
-        this.fieldLevel = fieldLevel;
         this.eduGroupId = eduGroupId;
         this.eduGroup = eduGroup;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -33,19 +31,11 @@ public class EduField {
         this.name = name;
     }
 
-    public short getFieldLevel() {
-        return fieldLevel;
-    }
-
-    public void setFieldLevel(short fieldLevel) {
-        this.fieldLevel = fieldLevel;
-    }
-
-    public long getEduGroupId() {
+    public Long getEduGroupId() {
         return eduGroupId;
     }
 
-    public void setEduGroupId(long eduGroupId) {
+    public void setEduGroupId(Long eduGroupId) {
         this.eduGroupId = eduGroupId;
     }
 
@@ -62,7 +52,6 @@ public class EduField {
         return "EduField{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", fieldLevel=" + fieldLevel +
                 ", eduGroupId=" + eduGroupId +
                 ", eduGroup=" + eduGroup +
                 '}';

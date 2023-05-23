@@ -2,18 +2,18 @@ package com.nima.tuchemservicelabregistryapi.model;
 import java.util.List;
 
 public class Instrument {
-    private long id;
+    private Long id;
     private String name;
     private String model;
     private String serial;
     private String manufacturer;
     private String madeIn;
-    private byte serviceable;
+    private Boolean serviceable;
     private List<InstrumentOperator> operators;
 
     public Instrument() {}
 
-    public Instrument(long id, String name, String model, String serial, String manufacturer, String madeIn, byte serviceable, List<InstrumentOperator> operators) {
+    public Instrument(Long id, String name, String model, String serial, String manufacturer, String madeIn, Boolean serviceable, List<InstrumentOperator> operators) {
         this.id = id;
         this.name = name;
         this.model = model;
@@ -24,11 +24,11 @@ public class Instrument {
         this.operators = operators;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -72,11 +72,11 @@ public class Instrument {
         this.madeIn = madeIn;
     }
 
-    public byte getServiceable() {
+    public Boolean getServiceable() {
         return serviceable;
     }
 
-    public void setServiceable(byte serviceable) {
+    public void setServiceable(Boolean serviceable) {
         this.serviceable = serviceable;
     }
 

@@ -3,16 +3,16 @@ package com.nima.tuchemservicelabregistryapi.model;
 import java.sql.Timestamp;
 
 public class Discount {
-    private long id;
-    private short type;
-    private short percent;
+    private Long id;
+    private Short type;
+    private Short percent;
     private Timestamp date;
-    private short minSamples;
+    private Short minSamples;
     private String name;
 
     public Discount() {}
 
-    public Discount(long id, short type, short percent, Timestamp date, short minSamples, String name) {
+    public Discount(Long id, Short type, Short percent, Timestamp date, Short minSamples, String name) {
         this.id = id;
         this.type = type;
         this.percent = percent;
@@ -21,27 +21,27 @@ public class Discount {
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public short getType() {
+    public Short getType() {
         return type;
     }
 
-    public void setType(short type) {
+    public void setType(Short type) {
         this.type = type;
     }
 
-    public short getPercent() {
+    public Short getPercent() {
         return percent;
     }
 
-    public void setPercent(short percent) {
+    public void setPercent(Short percent) {
         this.percent = percent;
     }
 
@@ -53,11 +53,11 @@ public class Discount {
         this.date = date;
     }
 
-    public short getMinSamples() {
+    public Short getMinSamples() {
         return minSamples;
     }
 
-    public void setMinSamples(short minSamples) {
+    public void setMinSamples(Short minSamples) {
         this.minSamples = minSamples;
     }
 
@@ -67,5 +67,17 @@ public class Discount {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Discount{" +
+                "id=" + id +
+                ", type=" + type +
+                ", percent=" + percent +
+                ", date=" + date +
+                ", minSamples=" + minSamples +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

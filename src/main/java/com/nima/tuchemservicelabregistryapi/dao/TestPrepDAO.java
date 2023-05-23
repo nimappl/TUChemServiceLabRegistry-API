@@ -1,8 +1,6 @@
 package com.nima.tuchemservicelabregistryapi.dao;
 
 import com.nima.tuchemservicelabregistryapi.model.Data;
-import com.nima.tuchemservicelabregistryapi.model.Filter;
-import com.nima.tuchemservicelabregistryapi.model.TestFee;
 import com.nima.tuchemservicelabregistryapi.model.TestPrep;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,7 +8,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class TestPrepDAO implements DAO<TestPrep> {
@@ -20,7 +17,7 @@ public class TestPrepDAO implements DAO<TestPrep> {
         testPrep.setId(rs.getLong("TestPrepID"));
         testPrep.setTestId(rs.getLong("TestID"));
         testPrep.setType(rs.getString("TPrepType"));
-        testPrep.setPrice(rs.getDouble("TPrepPrice"));
+        testPrep.setPrice(rs.getLong("TPrepPrice"));
         return testPrep;
     };
 
@@ -30,33 +27,8 @@ public class TestPrepDAO implements DAO<TestPrep> {
 
     @Override
     public Data<TestPrep> list(Data<TestPrep> template) {
-        boolean firstFilter = true;
-        String queryBody = "";
-        String countQuery = "SELECT COUNT(*) FROM testprepv";
-        String selectQuery = "SELECT * FROM testprepv";
-
-        // WHERE clause for each of filters
-        for (Filter filter : template.filters) {
-            if (firstFilter) { queryBody += " WHERE "; firstFilter = false; }
-            else queryBody += " AND ";
-            queryBody += filter.key + " LIKE \"%" + filter.value + "%\" ";
-        }
-        countQuery += queryBody;
-
-        // ORDER BY
-        if (template.sortBy != null) {
-            String sortType = template.sortType == 0 ? "ASC " : "DESC ";
-            queryBody += " ORDER BY " + template.sortBy + " " + sortType;
-        }
-
-        // PAGINATION
-        if (template.pageSize != 0) {
-            queryBody += " LIMIT " + template.pageSize + " OFFSET " + ((template.pageNumber - 1) * template.pageSize);
-        }
-        selectQuery += queryBody;
-
-        template.count = jdbcTemplate.queryForObject(countQuery, Integer.class);
-        template.records = jdbcTemplate.query(selectQuery, rowMapper);
+        template.count = jdbcTemplate.queryForObject(template.countQuery("vTestPerp", "TestPrepID"), Integer.class);
+        template.records = jdbcTemplate.query(template.selectQuery("vTestPrep", "TestPrepID"), rowMapper);
         return template;
     }
 
@@ -66,7 +38,7 @@ public class TestPrepDAO implements DAO<TestPrep> {
     }
 
     @Override
-    public Optional<TestPrep> getById(Long id) {
+    public TestPrep getById(Long id) {
         String sql = "SELECT * FROM TestPrep WHERE TestPrepID = ?";
         TestPrep testPrep = null;
         try {
@@ -74,23 +46,23 @@ public class TestPrepDAO implements DAO<TestPrep> {
         } catch (DataAccessException ex) {
             System.out.println("Item not found: " + id);
         }
-        return Optional.ofNullable(testPrep);
+        return testPrep;
     }
 
     @Override
     public int create(TestPrep testPrep) {
-        return jdbcTemplate.update("INSERT INTO TestPrep(TestId, TPrepType, TPrepPrice) VALUES (?,?,?)",
+        return jdbcTemplate.update("INSERT INTO TestPrep (TestID, TPrepType, TPrepPrice) VALUES (?,?,?)",
                 testPrep.getTestId(), testPrep.getType(), testPrep.getPrice());
     }
 
     @Override
     public int update(TestPrep testPrep) {
-        return jdbcTemplate.update("CALL UpdateTestPrep(?,?,?,?)",
+        return jdbcTemplate.update("EXEC UpdateTestPrep @id=?, @testId=?, @type=?, @price=?",
                 testPrep.getId(), testPrep.getTestId(), testPrep.getType(), testPrep.getPrice());
     }
 
     @Override
     public int delete(Long id) {
-        return jdbcTemplate.update("CALL DeleteTestPrep(?)", id);
+        return jdbcTemplate.update("UPDATE TestPrep SET DDate=GETDATE() WHERE TestPrepID=?", id);
     }
 }

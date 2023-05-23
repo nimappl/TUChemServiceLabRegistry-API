@@ -1,5 +1,7 @@
 package com.nima.tuchemservicelabregistryapi.model;
 
+import java.util.Objects;
+
 public class OrgPhoneNumber {
     private String number;
     private String section;
@@ -25,5 +27,9 @@ public class OrgPhoneNumber {
 
     public void setSection(String section) {
         this.section = section;
+    }
+
+    public boolean isEqualTo(OrgPhoneNumber o) {
+        return number.equals(o.getNumber());
     }
 }

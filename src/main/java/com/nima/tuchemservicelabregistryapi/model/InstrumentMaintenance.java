@@ -4,35 +4,45 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public class InstrumentMaintenance {
-    private long id;
+    private Long id;
     private String title;
     private Timestamp date;
-    private double cost;
+    private Long totalCost;
+    private Long additionalCosts;
     private String invoiceNo;
+    private Long instrumentId;
     private Instrument instrument;
+    private Long servicemanId;
     private OrgRepresentative serviceman;
+    private Long servicingCompanyId;
+    private Organization servicingCompany;
     private String description;
     private List<IMUsedMaterial> usedMaterialList;
 
     public InstrumentMaintenance() {}
 
-    public InstrumentMaintenance(long id, String title, Timestamp date, double cost, String invoiceNo, Instrument instrument, OrgRepresentative serviceman, String description, List<IMUsedMaterial> usedMaterialList) {
+    public InstrumentMaintenance(Long id, String title, Timestamp date, Long totalCost, Long additionalCosts, String invoiceNo, Long instrumentId, Instrument instrument, Long servicemanId, OrgRepresentative serviceman, Long servicingCompanyId, Organization servicingCompany, String description, List<IMUsedMaterial> usedMaterialList) {
         this.id = id;
         this.title = title;
         this.date = date;
-        this.cost = cost;
+        this.totalCost = totalCost;
+        this.additionalCosts = additionalCosts;
         this.invoiceNo = invoiceNo;
+        this.instrumentId = instrumentId;
         this.instrument = instrument;
+        this.servicemanId = servicemanId;
         this.serviceman = serviceman;
+        this.servicingCompanyId = servicingCompanyId;
+        this.servicingCompany = servicingCompany;
         this.description = description;
         this.usedMaterialList = usedMaterialList;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -52,12 +62,20 @@ public class InstrumentMaintenance {
         this.date = date;
     }
 
-    public double getCost() {
-        return cost;
+    public Long getTotalCost() {
+        return totalCost;
     }
 
-    public void setCost(double cost) {
-        this.cost = cost;
+    public void setTotalCost(Long totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public Long getAdditionalCosts() {
+        return additionalCosts;
+    }
+
+    public void setAdditionalCosts(Long additionalCosts) {
+        this.additionalCosts = additionalCosts;
     }
 
     public String getInvoiceNo() {
@@ -68,6 +86,14 @@ public class InstrumentMaintenance {
         this.invoiceNo = invoiceNo;
     }
 
+    public Long getInstrumentId() {
+        return instrumentId;
+    }
+
+    public void setInstrumentId(Long instrumentId) {
+        this.instrumentId = instrumentId;
+    }
+
     public Instrument getInstrument() {
         return instrument;
     }
@@ -76,12 +102,36 @@ public class InstrumentMaintenance {
         this.instrument = instrument;
     }
 
+    public Long getServicemanId() {
+        return servicemanId;
+    }
+
+    public void setServicemanId(Long servicemanId) {
+        this.servicemanId = servicemanId;
+    }
+
     public OrgRepresentative getServiceman() {
         return serviceman;
     }
 
     public void setServiceman(OrgRepresentative serviceman) {
         this.serviceman = serviceman;
+    }
+
+    public Long getServicingCompanyId() {
+        return servicingCompanyId;
+    }
+
+    public void setServicingCompanyId(Long servicingCompanyId) {
+        this.servicingCompanyId = servicingCompanyId;
+    }
+
+    public Organization getServicingCompany() {
+        return servicingCompany;
+    }
+
+    public void setServicingCompany(Organization servicingCompany) {
+        this.servicingCompany = servicingCompany;
     }
 
     public String getDescription() {
@@ -98,5 +148,25 @@ public class InstrumentMaintenance {
 
     public void setUsedMaterialList(List<IMUsedMaterial> usedMaterialList) {
         this.usedMaterialList = usedMaterialList;
+    }
+
+    @Override
+    public String toString() {
+        return "InstrumentMaintenance{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", date=" + date +
+                ", totalCost=" + totalCost +
+                ", additionalCosts=" + additionalCosts +
+                ", invoiceNo='" + invoiceNo + '\'' +
+                ", instrumentId=" + instrumentId +
+                ", instrument=" + instrument +
+                ", servicemanId=" + servicemanId +
+                ", serviceman=" + serviceman +
+                ", servicingCompanyId=" + servicingCompanyId +
+                ", servicingCompany=" + servicingCompany +
+                ", description='" + description + '\'' +
+                ", usedMaterialList=" + usedMaterialList +
+                '}';
     }
 }

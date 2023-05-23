@@ -1,14 +1,11 @@
 package com.nima.tuchemservicelabregistryapi.dao;
 
 import com.nima.tuchemservicelabregistryapi.model.Data;
-import com.nima.tuchemservicelabregistryapi.model.Filter;
 import com.nima.tuchemservicelabregistryapi.model.TUProfessor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 public class TUProfessorDAO implements DAO<TUProfessor> {
@@ -18,21 +15,24 @@ public class TUProfessorDAO implements DAO<TUProfessor> {
 
     private RowMapper<TUProfessor> rowMapper = (rs, rowNum) -> {
         TUProfessor professor = new TUProfessor();
-        professor.setId(rs.getInt("PersonID"));
+        professor.setId(rs.getLong("PersonID"));
         professor.setNationalNumber(rs.getString("PNationalNumber"));
         professor.setFirstName(rs.getString("PFirstName"));
         professor.setLastName(rs.getString("PLastName"));
         professor.setPhoneNumber(rs.getString("PPhoneNumber"));
         professor.setEmail(rs.getString("PEmail"));
-        professor.setGender(rs.getByte("PGender"));
-        professor.setCustomerId(rs.getInt("CustomerID"));
-        professor.setType(rs.getShort("PType"));
+        professor.setGender((Boolean) rs.getObject("PGender"));
+        professor.setCustomerId((Long) rs.getObject("CustomerID"));
+        professor.setTypeStdn(rs.getBoolean("PTypeStdn"));
+        professor.setTypeProf(rs.getBoolean("PTypeProf"));
+        professor.setTypeLab(rs.getBoolean("PTypeLab"));
+        professor.setTypeOrg(rs.getBoolean("PTypeOrg"));
         professor.setUsername(rs.getString("PUsername"));
         professor.setPassword(rs.getString("PPassword"));
         professor.setPersonnelCode(rs.getString("ProfPersonnelCode"));
-        professor.setEduGroupId(rs.getLong("ProfEduGroupID"));
+        professor.setEduGroupId((Long) rs.getObject("ProfEduGroupID"));
         professor.setGrantIssueDate(rs.getTimestamp("ProfGrantIssueDate"));
-        professor.setGrantAmount(rs.getDouble("ProfGrantAmount"));
+        professor.setGrantAmount((Long) rs.getObject("ProfGrantAmount"));
         professor.setGrantCredibleUntil(rs.getTimestamp("ProfGrantCredibleUntil"));
         return professor;
     };
@@ -45,39 +45,11 @@ public class TUProfessorDAO implements DAO<TUProfessor> {
 
     @Override
     public Data<TUProfessor> list(Data<TUProfessor> template) {
-        boolean firstFilter = true;
-        String queryBody = "";
-        String countQuery = "SELECT COUNT(*) FROM tuprofessorv";
-        String selectQuery = "SELECT * FROM tuprofessorv";
-
-        // WHERE clause for each of filters
-        for (Filter filter : template.filters) {
-            if (firstFilter) {
-                queryBody += " WHERE ";
-                firstFilter = false;
-            } else queryBody += " AND ";
-            queryBody += filter.key + " LIKE \"%" + filter.value + "%\" ";
-        }
-        countQuery += queryBody;
-
-        // ORDER BY
-        if (template.sortBy != null) {
-            String sortType = template.sortType == 0 ? "ASC " : "DESC ";
-            queryBody += " ORDER BY " + template.sortBy + " " + sortType;
-        }
-
-        // PAGINATION
-        if (template.pageSize != 0) {
-            queryBody += " LIMIT " + template.pageSize + " OFFSET " + ((template.pageNumber - 1) * template.pageSize);
-        }
-        selectQuery += queryBody;
-
-        template.count = jdbcTemplate.queryForObject(countQuery, Integer.class);
-        template.records = jdbcTemplate.query(selectQuery, rowMapper);
-
+        template.count = jdbcTemplate.queryForObject(template.countQuery("vTUProfessor", "PersonID"), Integer.class);
+        template.records = jdbcTemplate.query(template.selectQuery("vTUProfessor", "PersonID"), rowMapper);
         template.records.forEach((TUProfessor professor) -> {
             if (professor.getEduGroupId() != 0) {
-                professor.setEduGroup(eduGroupDao.getById(professor.getEduGroupId()).get());
+                professor.setEduGroup(eduGroupDao.getById(professor.getEduGroupId()));
             }
         });
 
@@ -85,39 +57,11 @@ public class TUProfessorDAO implements DAO<TUProfessor> {
     }
 
     public Data<TUProfessor> grantList(Data<TUProfessor> template) {
-        boolean firstFilter = true;
-        String queryBody = "";
-        String countQuery = "SELECT COUNT(*) FROM tuprofgrant";
-        String selectQuery = "SELECT * FROM tuprofgrant";
-
-        // WHERE clause for each of filters
-        for (Filter filter : template.filters) {
-            if (firstFilter) {
-                queryBody += " WHERE ";
-                firstFilter = false;
-            } else queryBody += " AND ";
-            queryBody += filter.key + " LIKE \"%" + filter.value + "%\" ";
-        }
-        countQuery += queryBody;
-
-        // ORDER BY
-        if (template.sortBy != null) {
-            String sortType = template.sortType == 0 ? "ASC " : "DESC ";
-            queryBody += " ORDER BY " + template.sortBy + " " + sortType;
-        }
-
-        // PAGINATION
-        if (template.pageSize != 0) {
-            queryBody += " LIMIT " + template.pageSize + " OFFSET " + ((template.pageNumber - 1) * template.pageSize);
-        }
-        selectQuery += queryBody;
-
-        template.count = jdbcTemplate.queryForObject(countQuery, Integer.class);
-        template.records = jdbcTemplate.query(selectQuery, rowMapper);
-
+        template.count = jdbcTemplate.queryForObject(template.countQuery("vTUProfessor", "PersonID"), Integer.class);
+        template.records = jdbcTemplate.query(template.countQuery("vTUProfessor", "PersonID"), rowMapper);
         template.records.forEach((TUProfessor professor) -> {
             if (professor.getEduGroupId() != 0) {
-                professor.setEduGroup(eduGroupDao.getById(professor.getEduGroupId()).get());
+                professor.setEduGroup(eduGroupDao.getById(professor.getEduGroupId()));
             }
         });
 
@@ -125,18 +69,18 @@ public class TUProfessorDAO implements DAO<TUProfessor> {
     }
 
     @Override
-    public Optional<TUProfessor> getById(Long id) {
-        String sql = "SELECT * FROM tuprofessorv WHERE PersonID = ?";
+    public TUProfessor getById(Long id) {
+        String sql = "SELECT * FROM vTUProfessorAll WHERE PersonID = ?";
         TUProfessor professor = null;
         try {
             professor = jdbcTemplate.queryForObject(sql, new Object[]{id}, rowMapper);
             if (professor.getEduGroupId() != 0) {
-                professor.setEduGroup(eduGroupDao.getById(professor.getEduGroupId()).get());
+                professor.setEduGroup(eduGroupDao.getById(professor.getEduGroupId()));
             }
         } catch (DataAccessException ex) {
             System.out.println("Item not found: " + id);
         }
-        return Optional.ofNullable(professor);
+        return professor;
     }
 
     @Override

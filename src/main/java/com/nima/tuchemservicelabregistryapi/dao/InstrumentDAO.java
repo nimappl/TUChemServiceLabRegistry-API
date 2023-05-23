@@ -1,108 +1,105 @@
 package com.nima.tuchemservicelabregistryapi.dao;
 
 import com.nima.tuchemservicelabregistryapi.model.Data;
-import com.nima.tuchemservicelabregistryapi.model.Filter;
 import com.nima.tuchemservicelabregistryapi.model.Instrument;
+import com.nima.tuchemservicelabregistryapi.model.InstrumentOperator;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
 @Component
 public class InstrumentDAO implements DAO<Instrument> {
 
     private JdbcTemplate jdbcTemplate;
-
+    private InstrumentOperatorDAO operatorDAO;
     private RowMapper<Instrument> rowMapper = (rs, rowNum) -> {
         Instrument instrument = new Instrument();
-        instrument.setId(rs.getInt("InstrumentID"));
+        instrument.setId(rs.getLong("InstrumentID"));
         instrument.setName(rs.getString("IName"));
         instrument.setModel(rs.getString("IModel"));
         instrument.setSerial(rs.getString("ISerialNo"));
         instrument.setManufacturer(rs.getString("IManufacturer"));
         instrument.setMadeIn(rs.getString("IMadeIn"));
-        instrument.setServiceable(rs.getByte("IServiceable"));
+        instrument.setServiceable(rs.getBoolean("IServiceable"));
         return instrument;
     };
 
-    public InstrumentDAO(JdbcTemplate jdbcTemplate) {
+    public InstrumentDAO(JdbcTemplate jdbcTemplate, InstrumentOperatorDAO operatorDAO) {
         this.jdbcTemplate = jdbcTemplate;
+        this.operatorDAO = operatorDAO;
     }
 
     @Override
     public Data<Instrument> list(Data<Instrument> template) {
-        boolean firstFilter = true;
-        String queryBody = "";
-        String countQuery = "SELECT COUNT(*) FROM instrumentv";
-        String selectQuery = "SELECT * FROM instrumentv";
-
-        // WHERE clause for each of filters
-        for (Filter filter : template.filters) {
-            if (firstFilter) { queryBody += " WHERE "; firstFilter = false; }
-            else queryBody += " AND ";
-            queryBody += filter.key + " LIKE \"%" + filter.value + "%\" ";
-        }
-        countQuery += queryBody;
-
-        // ORDER BY
-        if (template.sortBy != null) {
-            String sortType = template.sortType == 0 ? "ASC " : "DESC ";
-            queryBody += " ORDER BY " + template.sortBy + " " + sortType;
-        }
-
-        // PAGINATION
-        if (template.pageSize != 0) {
-            queryBody += " LIMIT " + template.pageSize + " OFFSET " + ((template.pageNumber - 1) * template.pageSize);
-        }
-        selectQuery += queryBody;
-
-        template.count = jdbcTemplate.queryForObject(countQuery, Integer.class);
-        template.records = jdbcTemplate.query(selectQuery, rowMapper);
+        template.count = jdbcTemplate.queryForObject(template.countQuery("vInstrument", "InstrumentID"), Integer.class);
+        template.records = jdbcTemplate.query(template.selectQuery("vInstrument", "InstrumentID"), rowMapper);
+        template.records.forEach(instrument -> {
+            instrument.setOperators(operatorDAO.getOperatorsOfInstrument(instrument.getId()));
+        });
         return template;
     }
 
     @Override
-    public Optional<Instrument> getById(Long id) {
-        String sql = "SELECT * FROM instrument WHERE InstrumentID = ?";
+    public Instrument getById(Long id) {
+        String sql = "SELECT * FROM Instrument WHERE InstrumentID = ?";
         Instrument instrument = null;
         try {
             instrument = jdbcTemplate.queryForObject(sql, new Object[]{id}, rowMapper);
+            instrument.setOperators(operatorDAO.getOperatorsOfInstrument(instrument.getId()));
         } catch (DataAccessException ex) {
             System.out.println("Item not found: " + id);
         }
-        return Optional.ofNullable(instrument);
+        return instrument;
     }
 
     @Override
     public int create(Instrument instrument) {
-        String sql = "INSERT INTO instrument(IName, IModel, ISerialNo, IManufacturer, IMadeIn, IServiceable)" +
-                " VALUES(?, ?, ?, ?, ?, ?)";
+        Long id = jdbcTemplate.queryForObject("EXECUTE CreateInstrument ?, ?, ?, ?, ?, ?",
+                new Object[]{instrument.getName(), instrument.getModel(), instrument.getSerial(), instrument.getManufacturer(), instrument.getMadeIn(), instrument.getServiceable()}, Long.class);
 
-        return jdbcTemplate.update(sql, instrument.getName(), instrument.getModel(), instrument.getSerial(),
-                instrument.getManufacturer(), instrument.getMadeIn(), instrument.getServiceable());
+        if (instrument.getOperators() != null) {
+            instrument.getOperators().forEach(operator -> {
+                operatorDAO.addForInstrument(operator, id);
+            });
+        }
+        return 1;
     }
 
     @Override
     public int update(Instrument instrument) {
-//        String sql = "UPDATE instrument SET Name=?, Model=?, Serial=?, Manufacturer=?, MadeIn=?, Active=?" +
-//                     " WHERE InstrumentID=?";
-//
-//        return jdbcTemplate.update(sql, instrument.getName(), instrument.getModel(), instrument.getSerial(),
-//                                        instrument.getManufacturer(), instrument.getMadeIn(), instrument.getServicable(),
-//                                        instrument.getInstrumentId());
-        jdbcTemplate.update("CALL UpdateInstrument(?, ?, ?, ?, ?, ?, ?)", instrument.getId(), instrument.getName(), instrument.getModel(),
-                instrument.getSerial(), instrument.getManufacturer(), instrument.getMadeIn(), instrument.getServiceable());
-        return 1;
+        Instrument instrumentInDB = getById(instrument.getId());
+        if (instrumentInDB.getOperators() != null) {
+            instrumentInDB.getOperators().forEach(operatorInDB -> {
+                boolean isRemoved = true;
+                for (InstrumentOperator operator : instrument.getOperators()) {
+                    if (operatorInDB.getId().equals(operator.getId())) {
+                        isRemoved = false;
+                        break;
+                    }
+                }
+                if (isRemoved) operatorDAO.removeForInstrument(operatorInDB.getId(), instrument.getId());
+            });
+        }
+        if (instrument.getOperators() != null) {
+            instrument.getOperators().forEach(operator -> {
+                boolean isNew = true;
+                for (InstrumentOperator operatorInDB : instrumentInDB.getOperators()) {
+                    if (operatorInDB.getId().equals(operator.getId())) {
+                        isNew = false;
+                        break;
+                    }
+                }
+                if (isNew) operatorDAO.addForInstrument(operator, instrument.getId());
+            });
+        }
+
+        return jdbcTemplate.update("UPDATE Instrument SET IName=?, IModel=?, ISerialNo=?, IManufacturer=?, IMadeIn=?, IServiceable=? WHERE InstrumentID=?",
+                instrument.getName(), instrument.getModel(), instrument.getSerial(), instrument.getManufacturer(), instrument.getMadeIn(), instrument.getServiceable(), instrument.getId());
     }
 
     @Override
     public int delete(Long id) {
-//        LocalDateTime current = LocalDateTime.now();
-//        return jdbcTemplate.update("UPDATE instrument SET DDate=? WHERE InstrumentID=?", current, id);
-        jdbcTemplate.update("CALL DeleteInstrument(?)", id);
-        return 1;
+        return jdbcTemplate.update("EXEC DeleteInstrument @id=?", id);
     }
 }

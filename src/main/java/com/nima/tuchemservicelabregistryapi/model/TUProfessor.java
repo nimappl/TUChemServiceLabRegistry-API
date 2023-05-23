@@ -3,16 +3,16 @@ import java.sql.Timestamp;
 
 public class TUProfessor extends Person {
     private String personnelCode;
-    private long eduGroupId;
+    private Long eduGroupId;
     private EduGroup eduGroup;
     private Timestamp grantIssueDate;
-    private double grantAmount;
+    private Long grantAmount;
     private Timestamp grantCredibleUntil;
 
     public TUProfessor() {}
 
-    public TUProfessor(long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, byte gender, long customerId, String username, String password, String personnelCode, long eduGroupId, EduGroup eduGroup, Timestamp grantIssueDate, double grantAmount, Timestamp grantCredibleUntil) {
-        super(id, nationalNumber, firstName, lastName, phoneNumber, email, gender, customerId, (short) 3, username, password);
+    public TUProfessor(Long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, Boolean gender, Long customerId, Boolean typeStdn, Boolean typeProf, Boolean typeLab, Boolean typeOrg, String username, String password, String personnelCode, Long eduGroupId, EduGroup eduGroup, Timestamp grantIssueDate, Long grantAmount, Timestamp grantCredibleUntil) {
+        super(id, nationalNumber, firstName, lastName, phoneNumber, email, gender, customerId, typeStdn, typeProf, typeLab, typeOrg, username, password);
         this.personnelCode = personnelCode;
         this.eduGroupId = eduGroupId;
         this.eduGroup = eduGroup;
@@ -21,11 +21,11 @@ public class TUProfessor extends Person {
         this.grantCredibleUntil = grantCredibleUntil;
     }
 
-    public long getEduGroupId() {
+    public Long getEduGroupId() {
         return eduGroupId;
     }
 
-    public void setEduGroupId(long eduGroupId) {
+    public void setEduGroupId(Long eduGroupId) {
         this.eduGroupId = eduGroupId;
     }
 
@@ -53,11 +53,11 @@ public class TUProfessor extends Person {
         this.grantIssueDate = grantIssueDate;
     }
 
-    public double getGrantAmount() {
+    public Long getGrantAmount() {
         return grantAmount;
     }
 
-    public void setGrantAmount(double grantAmount) {
+    public void setGrantAmount(Long grantAmount) {
         this.grantAmount = grantAmount;
     }
 

@@ -36,24 +36,24 @@ public class EduGroupController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EduGroup> getById(@PathVariable("id") Long id) {
-        EduGroup EduGroup;
+        EduGroup eduGroup;
         try {
-            EduGroup = this.dao.getById(id).get();
+            eduGroup = this.dao.getById(id);
         } catch (NoSuchElementException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(EduGroup, HttpStatus.OK);
+        return new ResponseEntity<>(eduGroup, HttpStatus.OK);
     }
 
     @PostMapping("/new")
-    public ResponseEntity createEduGroup(@RequestBody EduGroup EduGroup) {
-        if (dao.create(EduGroup) == 1) return new ResponseEntity(HttpStatus.CREATED);
+    public ResponseEntity createEduGroup(@RequestBody EduGroup eduGroup) {
+        if (dao.create(eduGroup) == 1) return new ResponseEntity(HttpStatus.CREATED);
         return new ResponseEntity((HttpStatus.NOT_MODIFIED));
     }
 
     @PutMapping("/update")
-    public ResponseEntity updateEduGroup(@RequestBody EduGroup EduGroup) {
-        if (dao.update(EduGroup) == 1)  return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity updateEduGroup(@RequestBody EduGroup eduGroup) {
+        if (dao.update(eduGroup) == 1)  return new ResponseEntity(HttpStatus.OK);
         return new ResponseEntity((HttpStatus.NOT_MODIFIED));
     }
 

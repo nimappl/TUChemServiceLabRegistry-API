@@ -1,33 +1,33 @@
 package com.nima.tuchemservicelabregistryapi.model;
 
 public class TestPrep {
-    private long id;
-    private long testId;
+    private Long id;
+    private Long testId;
     private String type;
-    private double price;
+    private Long price;
 
     public TestPrep() {}
 
-    public TestPrep(long id, long testId, String type, double price) {
+    public TestPrep(Long id, Long testId, String type, Long price) {
         this.id = id;
         this.testId = testId;
         this.type = type;
         this.price = price;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getTestId() {
+    public Long getTestId() {
         return testId;
     }
 
-    public void setTestId(long testId) {
+    public void setTestId(Long testId) {
         this.testId = testId;
     }
 
@@ -39,11 +39,25 @@ public class TestPrep {
         this.type = type;
     }
 
-    public double getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Long price) {
         this.price = price;
+    }
+
+    public boolean isEqualTo(TestPrep prep) {
+        return testId.equals(prep.getTestId()) && type.equals(prep.getType()) && price.equals(prep.getPrice());
+    }
+
+    @Override
+    public String toString() {
+        return "TestPrep{" +
+                "id=" + id +
+                ", testId=" + testId +
+                ", type='" + type + '\'' +
+                ", price=" + price +
+                '}';
     }
 }

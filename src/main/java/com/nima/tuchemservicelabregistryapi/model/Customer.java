@@ -1,15 +1,15 @@
 package com.nima.tuchemservicelabregistryapi.model;
 
 public class Customer {
-    private long id;
-    private short type;
-    private double balance;
+    private Long id;
+    private Short type;
+    private Long balance;
     private Person person;
     private Organization organization;
 
     public Customer() {}
 
-    public Customer(long id, short type, double balance, Person person, Organization organization) {
+    public Customer(Long id, Short type, Long balance, Person person, Organization organization) {
         this.id = id;
         this.type = type;
         this.balance = balance;
@@ -17,27 +17,27 @@ public class Customer {
         this.organization = organization;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public short getType() {
+    public Short getType() {
         return type;
     }
 
-    public void setType(short type) {
+    public void setType(Short type) {
         this.type = type;
     }
 
-    public double getBalance() {
+    public Long getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(Long balance) {
         this.balance = balance;
     }
 

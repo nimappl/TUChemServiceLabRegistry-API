@@ -52,7 +52,7 @@ public class TUProfessorController {
     public ResponseEntity<TUProfessor> getById(@PathVariable("id") Long id) {
         TUProfessor person;
         try {
-            person = this.dao.getById(id).get();
+            person = this.dao.getById(id);
         } catch (NoSuchElementException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

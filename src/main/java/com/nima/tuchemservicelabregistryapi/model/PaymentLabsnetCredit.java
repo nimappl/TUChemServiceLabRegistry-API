@@ -8,7 +8,7 @@ public class PaymentLabsnetCredit extends Payment {
 
     public PaymentLabsnetCredit() {}
 
-    public PaymentLabsnetCredit(long id, Timestamp date, double amount, long serviceId, String creditTitle, String transactionCode) {
+    public PaymentLabsnetCredit(Long id, Timestamp date, Long amount, Long serviceId, String creditTitle, String transactionCode) {
         super(id, date, amount, serviceId);
         this.creditTitle = creditTitle;
         this.transactionCode = transactionCode;

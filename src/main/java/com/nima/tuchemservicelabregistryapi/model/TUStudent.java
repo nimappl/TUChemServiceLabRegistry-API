@@ -2,14 +2,16 @@ package com.nima.tuchemservicelabregistryapi.model;
 
 public class TUStudent extends Person {
     private String stCode;
-    private long eduFieldId;
+    private Short level;
+    private Long eduFieldId;
     private EduField eduField;
 
     public TUStudent() {}
 
-    public TUStudent(long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, byte gender, long customerId, String username, String password, String stCode, long eduFieldId, EduField eduField) {
-        super(id, nationalNumber, firstName, lastName, phoneNumber, email, gender, customerId, (short) 2, username, password);
+    public TUStudent(Long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, Boolean gender, Long customerId, Boolean typeStdn, Boolean typeProf, Boolean typeLab, Boolean typeOrg, String username, String password, String stCode, Short level, Long eduFieldId, EduField eduField) {
+        super(id, nationalNumber, firstName, lastName, phoneNumber, email, gender, customerId, typeStdn, typeProf, typeLab, typeOrg, username, password);
         this.stCode = stCode;
+        this.level = level;
         this.eduFieldId = eduFieldId;
         this.eduField = eduField;
     }
@@ -22,11 +24,19 @@ public class TUStudent extends Person {
         this.stCode = stCode;
     }
 
-    public long getEduFieldId() {
+    public Short getLevel() {
+        return level;
+    }
+
+    public void setLevel(Short level) {
+        this.level = level;
+    }
+
+    public Long getEduFieldId() {
         return eduFieldId;
     }
 
-    public void setEduFieldId(long eduFieldId) {
+    public void setEduFieldId(Long eduFieldId) {
         this.eduFieldId = eduFieldId;
     }
 

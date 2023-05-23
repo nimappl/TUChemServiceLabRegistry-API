@@ -1,18 +1,19 @@
 package com.nima.tuchemservicelabregistryapi.model;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 public class TestFee {
-    private long id;
-    private short type;
-    private double amount;
-    private long testId;
+    private Long id;
+    private Short type;
+    private Long amount;
+    private Long testId;
     private Timestamp date;
-    private short step;
+    private Short step;
 
     public TestFee() {}
 
-    public TestFee(long id, short type, double amount, long testId, Timestamp date, short step) {
+    public TestFee(Long id, Short type, Long amount, Long testId, Timestamp date, Short step) {
         this.id = id;
         this.type = type;
         this.amount = amount;
@@ -21,35 +22,35 @@ public class TestFee {
         this.step = step;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public short getType() {
+    public Short getType() {
         return type;
     }
 
-    public void setType(short type) {
+    public void setType(Short type) {
         this.type = type;
     }
 
-    public double getAmount() {
+    public Long getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(Long amount) {
         this.amount = amount;
     }
 
-    public long getTestId() {
+    public Long getTestId() {
         return testId;
     }
 
-    public void setTestId(long testId) {
+    public void setTestId(Long testId) {
         this.testId = testId;
     }
 
@@ -61,11 +62,27 @@ public class TestFee {
         this.date = date;
     }
 
-    public short getStep() {
+    public Short getStep() {
         return step;
     }
 
-    public void setStep(short step) {
+    public void setStep(Short step) {
         this.step = step;
+    }
+
+    public boolean isEqualTo(TestFee fee) {
+        return id.equals(fee.getId()) && type.equals(fee.getType()) && amount.equals(fee.getAmount()) && testId.equals(fee.getTestId()) && step.equals(fee.getStep());
+    }
+
+    @Override
+    public String toString() {
+        return "TestFee{" +
+                "id=" + id +
+                ", type=" + type +
+                ", amount=" + amount +
+                ", testId=" + testId +
+                ", date=" + date +
+                ", step=" + step +
+                '}';
     }
 }
