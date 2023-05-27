@@ -11,8 +11,9 @@ import java.util.List;
 
 @Component
 public class IMUsedMaterialDAO implements DAO<IMUsedMaterial> {
-    private JdbcTemplate jdbcTemplate;
-    private RowMapper<IMUsedMaterial> rowMapper = (rs, rowNum) -> {
+    private final JdbcTemplate jdbcTemplate;
+
+    private final RowMapper<IMUsedMaterial> rowMapper = (rs, rowNum) -> {
         IMUsedMaterial material = new IMUsedMaterial();
         material.setId(rs.getLong("UsedMaterialID"));
         material.setName(rs.getString("UMName"));

@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EduFieldDAO implements DAO<EduField> {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+
     private RowMapper<EduField> rowMapper = (rs, rowNum) -> {
         EduField eduField = new EduField();
         eduField.setId(rs.getLong("EduFieldID"));
@@ -50,7 +51,7 @@ public class EduFieldDAO implements DAO<EduField> {
 
     @Override
     public int create(EduField eduField) {
-        return jdbcTemplate.update("INSERT INTO EduField(EduFieldName, EduGroupID) VALUES(?, ?, ?)",
+        return jdbcTemplate.update("INSERT INTO EduField(EduFieldName, EduGroupID) VALUES(?, ?)",
                 eduField.getName(), eduField.getEduGroupId());
     }
 

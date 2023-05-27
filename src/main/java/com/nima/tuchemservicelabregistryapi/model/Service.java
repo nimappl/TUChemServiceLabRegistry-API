@@ -9,36 +9,32 @@ public class Service {
     private Integer sampleQuantity;
     private Integer testTime;
     private Long price;
-    private Byte hasSamplePrep;
     private Test test;
     private TestFee testFee;
-    private List<TestPrep> testPrep;
+    private List<TestPrep> testPreps;
     private LabPersonnel servingPersonnel;
-    private Customer customer;
-    private Byte settlementStatus;
+    private Account customer;
+    private Long customerId;
     private List<ServiceResultFile> resultFiles;
     private List<Discount> discounts;
-    private List<Payment> payments;
     private String considerations;
 
     public Service() {}
 
-    public Service(Long id, Timestamp date, Integer sampleQuantity, Integer testTime, Long price, Byte hasSamplePrep, Test test, TestFee testFee, List<TestPrep> testPrep, LabPersonnel servingPersonnel, Customer customer, Byte settlementStatus, List<ServiceResultFile> resultFiles, List<Discount> discounts, List<Payment> payments, String considerations) {
+    public Service(Long id, Timestamp date, Integer sampleQuantity, Integer testTime, Long price, Test test, TestFee testFee, List<TestPrep> testPreps, LabPersonnel servingPersonnel, Account customer, Long customerId, List<ServiceResultFile> resultFiles, List<Discount> discounts, String considerations) {
         this.id = id;
         this.date = date;
         this.sampleQuantity = sampleQuantity;
         this.testTime = testTime;
         this.price = price;
-        this.hasSamplePrep = hasSamplePrep;
         this.test = test;
         this.testFee = testFee;
-        this.testPrep = testPrep;
+        this.testPreps = testPreps;
         this.servingPersonnel = servingPersonnel;
         this.customer = customer;
-        this.settlementStatus = settlementStatus;
+        this.customerId = customerId;
         this.resultFiles = resultFiles;
         this.discounts = discounts;
-        this.payments = payments;
         this.considerations = considerations;
     }
 
@@ -82,14 +78,6 @@ public class Service {
         this.price = price;
     }
 
-    public Byte getHasSamplePrep() {
-        return hasSamplePrep;
-    }
-
-    public void setHasSamplePrep(Byte hasSamplePrep) {
-        this.hasSamplePrep = hasSamplePrep;
-    }
-
     public Test getTest() {
         return test;
     }
@@ -102,16 +90,16 @@ public class Service {
         return testFee;
     }
 
-    public List<TestPrep> getTestPrep() {
-        return testPrep;
-    }
-
-    public void setTestPrep(List<TestPrep> testPrep) {
-        this.testPrep = testPrep;
-    }
-
     public void setTestFee(TestFee testFee) {
         this.testFee = testFee;
+    }
+
+    public List<TestPrep> getTestPreps() {
+        return testPreps;
+    }
+
+    public void setTestPreps(List<TestPrep> testPreps) {
+        this.testPreps = testPreps;
     }
 
     public LabPersonnel getServingPersonnel() {
@@ -122,20 +110,20 @@ public class Service {
         this.servingPersonnel = servingPersonnel;
     }
 
-    public Customer getCustomer() {
+    public Account getCustomer() {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
+    public void setCustomer(Account customer) {
         this.customer = customer;
     }
 
-    public Byte getSettlementStatus() {
-        return settlementStatus;
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    public void setSettlementStatus(Byte settlementStatus) {
-        this.settlementStatus = settlementStatus;
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public List<ServiceResultFile> getResultFiles() {
@@ -152,14 +140,6 @@ public class Service {
 
     public void setDiscounts(List<Discount> discounts) {
         this.discounts = discounts;
-    }
-
-    public List<Payment> getPayments() {
-        return payments;
-    }
-
-    public void setPayments(List<Payment> payments) {
-        this.payments = payments;
     }
 
     public String getConsiderations() {

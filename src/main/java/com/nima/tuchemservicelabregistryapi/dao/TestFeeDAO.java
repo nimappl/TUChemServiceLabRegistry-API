@@ -11,8 +11,9 @@ import java.util.List;
 
 @Component
 public class TestFeeDAO implements DAO<TestFee> {
-    private JdbcTemplate jdbcTemplate;
-    private RowMapper<TestFee> rowMapper = (rs, rowNum) -> {
+    private final JdbcTemplate jdbcTemplate;
+
+    private final RowMapper<TestFee> rowMapper = (rs, rowNum) -> {
         TestFee fee = new TestFee();
         fee.setId(rs.getLong("TFeeID"));
         fee.setAmount(rs.getLong("TFAmount"));

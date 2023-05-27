@@ -2,16 +2,16 @@ package com.nima.tuchemservicelabregistryapi.model;
 
 public class TUStudent extends Person {
     private String stCode;
-    private Short level;
+    private Short eduLevel;
     private Long eduFieldId;
     private EduField eduField;
 
     public TUStudent() {}
 
-    public TUStudent(Long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, Boolean gender, Long customerId, Boolean typeStdn, Boolean typeProf, Boolean typeLab, Boolean typeOrg, String username, String password, String stCode, Short level, Long eduFieldId, EduField eduField) {
-        super(id, nationalNumber, firstName, lastName, phoneNumber, email, gender, customerId, typeStdn, typeProf, typeLab, typeOrg, username, password);
+    public TUStudent(Long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, Boolean gender, Boolean typeStdn, Boolean typeProf, Boolean typeLab, Boolean typeOrg, String stCode, Short eduLevel, Long eduFieldId, EduField eduField) {
+        super(id, nationalNumber, firstName, lastName, phoneNumber, email, gender, typeStdn, typeProf, typeLab, typeOrg);
         this.stCode = stCode;
-        this.level = level;
+        this.eduLevel = eduLevel;
         this.eduFieldId = eduFieldId;
         this.eduField = eduField;
     }
@@ -24,12 +24,12 @@ public class TUStudent extends Person {
         this.stCode = stCode;
     }
 
-    public Short getLevel() {
-        return level;
+    public Short getEduLevel() {
+        return eduLevel;
     }
 
-    public void setLevel(Short level) {
-        this.level = level;
+    public void setEduLevel(Short eduLevel) {
+        this.eduLevel = eduLevel;
     }
 
     public Long getEduFieldId() {
@@ -46,5 +46,15 @@ public class TUStudent extends Person {
 
     public void setEduField(EduField eduField) {
         this.eduField = eduField;
+    }
+
+    @Override
+    public String toString() {
+        return "TUStudent{" +
+                "stCode='" + stCode + '\'' +
+                ", eduLevel=" + eduLevel +
+                ", eduFieldId=" + eduFieldId +
+                ", eduField=" + eduField +
+                '}';
     }
 }

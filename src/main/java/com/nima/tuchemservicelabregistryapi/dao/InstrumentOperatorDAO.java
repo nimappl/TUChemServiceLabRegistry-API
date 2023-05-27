@@ -11,9 +11,10 @@ import java.util.List;
 
 @Component
 public class InstrumentOperatorDAO implements DAO<InstrumentOperator> {
-    private JdbcTemplate jdbcTemplate;
-    private PersonDAO personDAO;
-    private RowMapper<InstrumentOperator> rowMapper = (rs, rowNum) -> {
+    private final JdbcTemplate jdbcTemplate;
+    private final PersonDAO personDAO;
+
+    private final RowMapper<InstrumentOperator> rowMapper = (rs, rowNum) -> {
         InstrumentOperator operator = new InstrumentOperator();
         operator.setId(rs.getLong("OperatorID"));
         operator.setNationalNumber(rs.getString("PNationalNumber"));
@@ -22,13 +23,10 @@ public class InstrumentOperatorDAO implements DAO<InstrumentOperator> {
         operator.setPhoneNumber(rs.getString("PPhoneNumber"));
         operator.setEmail(rs.getString("PEmail"));
         operator.setGender((Boolean) rs.getObject("PGender"));
-        operator.setCustomerId((Long) rs.getObject("CustomerID"));
         operator.setTypeStdn(rs.getBoolean("PTypeStdn"));
         operator.setTypeProf(rs.getBoolean("PTypeProf"));
         operator.setTypeLab(rs.getBoolean("PTypeLab"));
         operator.setTypeOrg(rs.getBoolean("PTypeOrg"));
-        operator.setUsername(rs.getString("PUsername"));
-        operator.setPassword(rs.getString("PPassword"));
         operator.setDesignationDate(rs.getTimestamp("DesignationDate"));
         operator.setType((Short) rs.getObject("IOperatorType"));
         return operator;

@@ -11,7 +11,8 @@ import java.util.List;
 
 @Component
 public class DiscountDAO implements DAO<Discount> {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+
     private RowMapper<Discount> rowMapper = (rs, rowNum) -> {
         Discount discount = new Discount();
         discount.setId(rs.getLong("DiscountID"));

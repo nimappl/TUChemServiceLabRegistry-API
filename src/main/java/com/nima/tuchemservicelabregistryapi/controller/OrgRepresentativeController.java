@@ -31,14 +31,14 @@ public class OrgRepresentativeController {
         Data<OrgRepresentative> res;
         try {
             res = objectMapper.readValue(queryParams, Data.class);
-            res.records.forEach(orgRep -> {
-                orgRep.setOrganizations(organizationDAO.getOrganizationsOfRepresentative(orgRep.getId()));
-            });
         } catch(JsonProcessingException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         res = dao.list(res);
+        res.records.forEach(orgRep -> {
+            orgRep.setOrganizations(organizationDAO.getOrganizationsOfRepresentative(orgRep.getId()));
+        });
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
@@ -63,21 +63,19 @@ public class OrgRepresentativeController {
 
     @PutMapping("/update")
     public ResponseEntity updateOrgRepresentative(@RequestBody OrgRepresentative representative) {
-        List<Organization> orgsOfRepInDB = organizationDAO.getOrganizationsOfRepresentative(representative.getId());
-        if (dao.update(representative, orgsOfRepInDB) == 1)  return new ResponseEntity(HttpStatus.OK);
         return new ResponseEntity(HttpStatus.NOT_MODIFIED);
     }
 
     @DeleteMapping("/remove-representative/{orgId}/{repId}")
     public ResponseEntity removeOrgRepresentative(@PathVariable("orgId") Long orgId, @PathVariable("repId") Long repId) {
-        if (dao.deleteForOrganization(repId, orgId) != 1)
+        if (dao.removeRepresentativeForOrganization(repId, orgId) == 1)
             return new ResponseEntity(HttpStatus.OK);
         return new ResponseEntity(HttpStatus.NOT_MODIFIED);
     }
 
     @PutMapping("/add-representative/{orgId}/{repId}")
     public ResponseEntity addOrgRepresentative(@PathVariable("orgId") Long orgId, @PathVariable("repId") Long repId) {
-        if (dao.addForOrganization(repId, orgId) != 0) return new ResponseEntity(HttpStatus.NOT_MODIFIED);
+        if (dao.addRepresentativeForOrganization(repId, orgId) != 0) return new ResponseEntity(HttpStatus.NOT_MODIFIED);
         return new ResponseEntity(HttpStatus.OK);
     }
 

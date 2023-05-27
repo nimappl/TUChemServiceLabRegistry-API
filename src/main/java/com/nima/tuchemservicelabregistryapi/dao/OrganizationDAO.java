@@ -13,29 +13,31 @@ import java.util.List;
 
 @Component
 public class OrganizationDAO implements DAO<Organization> {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final OrgRepresentativeDAO orgRepresentativeDAO;
-    private RowMapper<Organization> rowMapper = (rs, rowNum) -> {
+    private final PersonDAO personDAO;
+
+    private final RowMapper<Organization> rowMapper = (rs, rowNum) -> {
         Organization organization = new Organization();
         organization.setId(rs.getLong("OrganizationID"));
         organization.setName(rs.getString("OrgName"));
         organization.setNationalId(rs.getString("OrgNationalID"));
         organization.setRegistrationNo(rs.getString("OrgRegistrationNo"));
         organization.setContractNo(rs.getString("OrgContractNo"));
-        organization.setCustomerId((Long) rs.getObject("CustomerID"));
         return organization;
     };
 
-    private RowMapper<OrgPhoneNumber> phoneNumberRowMapper = (rs, rowNum) -> {
+    private final RowMapper<OrgPhoneNumber> phoneNumberRowMapper = (rs, rowNum) -> {
         OrgPhoneNumber phoneNumber = new OrgPhoneNumber();
         phoneNumber.setNumber(rs.getString("OrgPhoneNumber"));
         phoneNumber.setSection(rs.getString("OrgPNSection"));
         return phoneNumber;
     };
 
-    public OrganizationDAO(JdbcTemplate jdbcTemplate, OrgRepresentativeDAO orgRepresentativeDAO) {
+    public OrganizationDAO(JdbcTemplate jdbcTemplate, OrgRepresentativeDAO orgRepresentativeDAO, PersonDAO personDAO) {
         this.jdbcTemplate = jdbcTemplate;
         this.orgRepresentativeDAO = orgRepresentativeDAO;
+        this.personDAO = personDAO;
     }
 
     @Override
@@ -52,7 +54,7 @@ public class OrganizationDAO implements DAO<Organization> {
     }
 
     public List<Organization> getOrganizationsOfRepresentative(Long orgRepId) {
-        return jdbcTemplate.query("SELECT * FROM OrganizationsOfRepresentatives WHERE RepresentativeID=?" + orgRepId, rowMapper);
+        return jdbcTemplate.query("SELECT * FROM vOrganizationsOfRepresentatives WHERE RepresentativeID=" + orgRepId, rowMapper);
     }
 
     public List<Organization> queryByName(String name) {
@@ -77,8 +79,8 @@ public class OrganizationDAO implements DAO<Organization> {
     @Override
     public int create(Organization org) {
         long id;
-        String createQuery = "EXEC CreateOrganization @name=?, @nationalId=?, @regNumber=?, @contractNo=?, @custId=?";
-        id = jdbcTemplate.queryForObject(createQuery, new Object[]{org.getName(), org.getNationalId(), org.getRegistrationNo(), org.getContractNo(), org.getCustomerId()}, Long.class);
+        String createQuery = "EXEC CreateOrganization @name=?, @nationalId=?, @regNumber=?, @contractNo=?";
+        id = jdbcTemplate.queryForObject(createQuery, new Object[]{org.getName(), org.getNationalId(), org.getRegistrationNo(), org.getContractNo()}, Long.class);
 
         if (org.getPhoneNumbers() != null) {
             org.getPhoneNumbers().forEach(phoneNumber -> {
@@ -89,8 +91,9 @@ public class OrganizationDAO implements DAO<Organization> {
 
         if (org.getRepresentatives() != null) {
             org.getRepresentatives().forEach(orgRep -> {
-                int repId = orgRepresentativeDAO.create(orgRep);
-                orgRepresentativeDAO.addForOrganization((long) repId, id);
+                if (orgRep.getId() == null) orgRep.setId((long) personDAO.create(orgRep));
+                else personDAO.update(orgRep);
+                orgRepresentativeDAO.addRepresentativeForOrganization(orgRep.getId(), id);
             });
         }
 
@@ -117,33 +120,32 @@ public class OrganizationDAO implements DAO<Organization> {
                     break;
                 }
             }
-            if (isRemoved) orgRepresentativeDAO.deleteForOrganization(repInDB.getId(), org.getId());
+            if (isRemoved) orgRepresentativeDAO.removeRepresentativeForOrganization(repInDB.getId(), org.getId());
         });
         org.getRepresentatives().forEach(rep -> {
-            Long repId;
             boolean isNew = true;
-            if (rep.getId() == null) repId = (long)orgRepresentativeDAO.create(rep);
-            else repId = rep.getId();
+            if (rep.getId() == null) rep.setId((long) personDAO.create(rep));
             for (OrgRepresentative repInDB : orgInDB.getRepresentatives()) {
-                if (repInDB.getId().equals(repId)) {
+                if (repInDB.getId().equals(rep.getId())) {
                     isNew = false;
                     break;
                 }
             }
-            if (isNew) orgRepresentativeDAO.addForOrganization(repId, org.getId());
+            if (isNew) {
+                personDAO.update(rep);
+                orgRepresentativeDAO.addRepresentativeForOrganization(rep.getId(), org.getId());
+            }
         });
 
-        jdbcTemplate.update("UPDATE Organization SET OrgName=?, OrgNationalID=?, OrgRegistrationNo=?, OrgContractNo=?, CustomerID=? WHERE OrganizationID=?",
-                org.getName(), org.getNationalId(), org.getRegistrationNo(), org.getContractNo(), org.getCustomerId(), org.getId());
+        jdbcTemplate.update("UPDATE Organization SET OrgName=?, OrgNationalID=?, OrgRegistrationNo=?, OrgContractNo=? WHERE OrganizationID=?",
+                org.getName(), org.getNationalId(), org.getRegistrationNo(), org.getContractNo(), org.getId());
         return 1;
     }
 
     @Override
     public int delete(Long id) {
         jdbcTemplate.update("DELETE FROM OrganizationPhoneNumber WHERE OrganizationID=?", id);
-        getById(id).getRepresentatives().forEach(rep -> {
-            orgRepresentativeDAO.deleteForOrganization(rep.getId(), id);
-        });
+        jdbcTemplate.update("DELETE FROM Organization_Representative WHERE OrganizationID=?", id);
         return jdbcTemplate.update("UPDATE Organization SET DDate=GETDATE() WHERE OrganizationID=?", id);
     }
 }

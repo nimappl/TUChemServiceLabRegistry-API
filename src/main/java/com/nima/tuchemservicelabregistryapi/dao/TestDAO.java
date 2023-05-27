@@ -11,8 +11,13 @@ import java.util.List;
 
 @Component
 public class TestDAO implements DAO<Test> {
-    private JdbcTemplate jdbcTemplate;
-    private RowMapper<Test> rowMapper = (rs, rowNum) -> {
+    private final JdbcTemplate jdbcTemplate;
+    private final DiscountDAO discountDao;
+    private final TestFeeDAO testFeeDao;
+    private final TestPrepDAO testPrepDao;
+    private final InstrumentDAO instrumentDao;
+
+    private final RowMapper<Test> rowMapper = (rs, rowNum) -> {
         Test test = new Test();
         test.setId(rs.getLong("TestID"));
         test.setName(rs.getString("TName"));
@@ -23,10 +28,6 @@ public class TestDAO implements DAO<Test> {
         test.setDescription(rs.getString("TDescription"));
         return test;
     };
-    private final DiscountDAO discountDao;
-    private final TestFeeDAO testFeeDao;
-    private final TestPrepDAO testPrepDao;
-    private final InstrumentDAO instrumentDao;
 
     public TestDAO(JdbcTemplate jdbcTemplate, DiscountDAO discountDao, TestFeeDAO testFeeDao, TestPrepDAO testPrepDao, InstrumentDAO instrumentDao) {
         this.jdbcTemplate = jdbcTemplate;

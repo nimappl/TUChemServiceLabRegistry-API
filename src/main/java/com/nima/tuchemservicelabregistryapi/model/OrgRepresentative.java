@@ -6,8 +6,8 @@ public class OrgRepresentative extends Person {
 
     public OrgRepresentative() {}
 
-    public OrgRepresentative(Long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, Boolean gender, Long customerId, Boolean typeStdn, Boolean typeProf, Boolean typeLab, Boolean typeOrg, String username, String password, List<Organization> organizations) {
-        super(id, nationalNumber, firstName, lastName, phoneNumber, email, gender, customerId, typeStdn, typeProf, typeLab, typeOrg, username, password);
+    public OrgRepresentative(Long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, Boolean gender, Boolean typeStdn, Boolean typeProf, Boolean typeLab, Boolean typeOrg, List<Organization> organizations) {
+        super(id, nationalNumber, firstName, lastName, phoneNumber, email, gender, typeStdn, typeProf, typeLab, typeOrg);
         this.organizations = organizations;
     }
 
@@ -17,5 +17,12 @@ public class OrgRepresentative extends Person {
 
     public void setOrganizations(List<Organization> organizations) {
         this.organizations = organizations;
+    }
+
+    @Override
+    public String toString() {
+        return "OrgRepresentative{" +
+                "organizations=" + organizations +
+                '}';
     }
 }

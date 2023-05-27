@@ -11,8 +11,9 @@ import java.util.List;
 
 @Component
 public class TestPrepDAO implements DAO<TestPrep> {
-    private JdbcTemplate jdbcTemplate;
-    private RowMapper<TestPrep> rowMapper = (rs, rowNum) -> {
+    private final JdbcTemplate jdbcTemplate;
+
+    private final RowMapper<TestPrep> rowMapper = (rs, rowNum) -> {
         TestPrep testPrep = new TestPrep();
         testPrep.setId(rs.getLong("TestPrepID"));
         testPrep.setTestId(rs.getLong("TestID"));

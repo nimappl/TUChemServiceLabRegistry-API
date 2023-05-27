@@ -11,8 +11,8 @@ public class TUProfessor extends Person {
 
     public TUProfessor() {}
 
-    public TUProfessor(Long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, Boolean gender, Long customerId, Boolean typeStdn, Boolean typeProf, Boolean typeLab, Boolean typeOrg, String username, String password, String personnelCode, Long eduGroupId, EduGroup eduGroup, Timestamp grantIssueDate, Long grantAmount, Timestamp grantCredibleUntil) {
-        super(id, nationalNumber, firstName, lastName, phoneNumber, email, gender, customerId, typeStdn, typeProf, typeLab, typeOrg, username, password);
+    public TUProfessor(Long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, Boolean gender, Boolean typeStdn, Boolean typeProf, Boolean typeLab, Boolean typeOrg, String personnelCode, Long eduGroupId, EduGroup eduGroup, Timestamp grantIssueDate, Long grantAmount, Timestamp grantCredibleUntil) {
+        super(id, nationalNumber, firstName, lastName, phoneNumber, email, gender, typeStdn, typeProf, typeLab, typeOrg);
         this.personnelCode = personnelCode;
         this.eduGroupId = eduGroupId;
         this.eduGroup = eduGroup;
@@ -67,5 +67,17 @@ public class TUProfessor extends Person {
 
     public void setGrantCredibleUntil(Timestamp grantCredibleUntil) {
         this.grantCredibleUntil = grantCredibleUntil;
+    }
+
+    @Override
+    public String toString() {
+        return "TUProfessor{" +
+                "personnelCode='" + personnelCode + '\'' +
+                ", eduGroupId=" + eduGroupId +
+                ", eduGroup=" + eduGroup +
+                ", grantIssueDate=" + grantIssueDate +
+                ", grantAmount=" + grantAmount +
+                ", grantCredibleUntil=" + grantCredibleUntil +
+                '}';
     }
 }

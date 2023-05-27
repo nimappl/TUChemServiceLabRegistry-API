@@ -11,9 +11,9 @@ import java.util.List;
 
 @Component
 public class PersonDAO implements DAO<Person> {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    public RowMapper<Person> rowMapper = (rs, rowNum) -> {
+    public final RowMapper<Person> rowMapper = (rs, rowNum) -> {
         Person person = new Person();
         person.setId(rs.getLong("PersonID"));
         person.setNationalNumber(rs.getString("PNationalNumber"));
@@ -22,7 +22,6 @@ public class PersonDAO implements DAO<Person> {
         person.setPhoneNumber(rs.getString("PPhoneNumber"));
         person.setEmail(rs.getString("PEmail"));
         person.setGender((Boolean) rs.getObject("PGender"));
-        person.setCustomerId((Long) rs.getObject("CustomerID"));
         person.setTypeStdn(rs.getBoolean("PTypeStdn"));
         person.setTypeProf(rs.getBoolean("PTypeProf"));
         person.setTypeLab(rs.getBoolean("PTypeLab"));
@@ -59,21 +58,17 @@ public class PersonDAO implements DAO<Person> {
 
     @Override
     public int create(Person person) {
-        String sql = "EXECUTE CreatePerson ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
-        if (person.getTypeStdn() == null) person.setTypeStdn(false);
-        if (person.getTypeProf() == null) person.setTypeProf(false);
-        if (person.getTypeLab() == null) person.setTypeLab(false);
-        if (person.getTypeOrg() == null) person.setTypeOrg(false);
+        String sql = "EXECUTE CreatePerson ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
 
-        return (int) jdbcTemplate.queryForObject(sql, new Object[]{person.getNationalNumber(), person.getFirstName(), person.getLastName(),
-                person.getPhoneNumber(), person.getEmail(),person.getGender(), person.getTypeStdn(), person.getTypeProf(), person.getTypeLab(),
-                person.getTypeOrg(), person.getUsername(), person.getPassword(), person.getCustomerId()}, Integer.class);
+        return jdbcTemplate.queryForObject(sql, new Object[]{person.getNationalNumber(), person.getFirstName(),
+                person.getLastName(), person.getPhoneNumber(), person.getEmail(),person.getGender(), person.getTypeStdn(),
+                person.getTypeProf(), person.getTypeLab(), person.getTypeOrg()}, Integer.class);
     }
 
     @Override
     public int update(Person person) {
-        return jdbcTemplate.update("UPDATE Person SET PNationalNumber=?, PFirstName=?, PLastName=?, PPhoneNumber=?, PEmail=?, PGender=?, CustomerID=? WHERE PersonID=?",
-                person.getNationalNumber(), person.getFirstName(), person.getLastName(), person.getPhoneNumber(), person.getEmail(), person.getGender(),  person.getCustomerId(), person.getId());
+        return jdbcTemplate.update("UPDATE Person SET PNationalNumber=?, PFirstName=?, PLastName=?, PPhoneNumber=?, PEmail=?, PGender=?, PTypeLab=?, PTypeProf=?, PTypeStdn=?, PTypeOrg=? WHERE PersonID=?",
+                person.getNationalNumber(), person.getFirstName(), person.getLastName(), person.getPhoneNumber(), person.getEmail(), person.getGender(), person.getTypeLab(), person.getTypeProf(),person.getTypeStdn(), person.getTypeOrg(), person.getId());
     }
 
     @Override

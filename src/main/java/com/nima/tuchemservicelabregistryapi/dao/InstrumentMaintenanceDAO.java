@@ -10,13 +10,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class InstrumentMaintenanceDAO implements DAO<InstrumentMaintenance> {
-    private JdbcTemplate jdbcTemplate;
-    private IMUsedMaterialDAO usedMaterialDAO;
-    private InstrumentDAO instrumentDAO;
-    private PersonDAO personDAO;
-    private OrgRepresentativeDAO orgRepresentativeDAO;
-    private OrganizationDAO organizationDAO;
-    private RowMapper<InstrumentMaintenance> rowMapper = (rs, rowNum) -> {
+    private final JdbcTemplate jdbcTemplate;
+    private final IMUsedMaterialDAO usedMaterialDAO;
+    private final InstrumentDAO instrumentDAO;
+    private final PersonDAO personDAO;
+    private final OrgRepresentativeDAO orgRepresentativeDAO;
+    private final OrganizationDAO organizationDAO;
+
+    private final RowMapper<InstrumentMaintenance> rowMapper = (rs, rowNum) -> {
         InstrumentMaintenance maintenance = new InstrumentMaintenance();
         maintenance.setId(rs.getLong("IMaintenanceID"));
         maintenance.setTitle(rs.getString("IMTitle"));
@@ -117,7 +118,7 @@ public class InstrumentMaintenanceDAO implements DAO<InstrumentMaintenance> {
         }
 
         if (maintenance.getServicingCompanyId() != null && maintenance.getServicemanId() != null) {
-            orgRepresentativeDAO.addForOrganization(maintenance.getServicemanId(), maintenance.getServicingCompanyId());
+            orgRepresentativeDAO.addRepresentativeForOrganization(maintenance.getServicemanId(), maintenance.getServicingCompanyId());
         }
 
         maintenanceInDB.getUsedMaterialList().forEach(materialInDB -> {

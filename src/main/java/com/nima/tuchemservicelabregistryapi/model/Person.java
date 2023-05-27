@@ -8,17 +8,14 @@ public class Person {
     private String phoneNumber;
     private String email;
     private Boolean gender;
-    private Long customerId;
     private Boolean typeStdn;
     private Boolean typeProf;
     private Boolean typeLab;
     private Boolean typeOrg;
-    private String username;
-    private String password;
 
     public Person() {}
 
-    public Person(Long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, Boolean gender, Long customerId, Boolean typeStdn, Boolean typeProf, Boolean typeLab, Boolean typeOrg, String username, String password) {
+    public Person(Long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, Boolean gender, Boolean typeStdn, Boolean typeProf, Boolean typeLab, Boolean typeOrg) {
         this.id = id;
         this.nationalNumber = nationalNumber;
         this.firstName = firstName;
@@ -26,13 +23,10 @@ public class Person {
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.gender = gender;
-        this.customerId = customerId;
         this.typeStdn = typeStdn;
         this.typeProf = typeProf;
         this.typeLab = typeLab;
         this.typeOrg = typeOrg;
-        this.username = username;
-        this.password = password;
     }
 
     public Long getId() {
@@ -91,10 +85,6 @@ public class Person {
         this.gender = gender;
     }
 
-    public Long getCustomerId() {
-        return customerId;
-    }
-
     public Boolean getTypeStdn() {
         return typeStdn;
     }
@@ -127,26 +117,6 @@ public class Person {
         this.typeOrg = typeOrg;
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public Person asPerson() {
         return this;
     }
@@ -161,13 +131,10 @@ public class Person {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", email='" + email + '\'' +
                 ", gender=" + gender +
-                ", customerId=" + customerId +
                 ", typeStdn=" + typeStdn +
                 ", typeProf=" + typeProf +
                 ", typeLab=" + typeLab +
                 ", typeOrg=" + typeOrg +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
                 '}';
     }
 }

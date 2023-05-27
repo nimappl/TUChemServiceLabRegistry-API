@@ -9,11 +9,10 @@ public class Organization {
     private String contractNo;
     private List<OrgPhoneNumber> phoneNumbers;
     private List<OrgRepresentative> representatives;
-    private Long customerId;
 
     public Organization() {}
 
-    public Organization(Long id, String name, String nationalId, String registrationNo, String contractNo, List<OrgPhoneNumber> phoneNumbers, List<OrgRepresentative> representatives, Long customerId) {
+    public Organization(Long id, String name, String nationalId, String registrationNo, String contractNo, List<OrgPhoneNumber> phoneNumbers, List<OrgRepresentative> representatives) {
         this.id = id;
         this.name = name;
         this.nationalId = nationalId;
@@ -21,7 +20,6 @@ public class Organization {
         this.contractNo = contractNo;
         this.phoneNumbers = phoneNumbers;
         this.representatives = representatives;
-        this.customerId = customerId;
     }
 
     public Long getId() {
@@ -80,15 +78,20 @@ public class Organization {
         this.representatives = representatives;
     }
 
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
-
     public boolean isEqualTo(Organization o) {
-        return name.equals(o.getName()) && nationalId.equals(o.getName()) && registrationNo.equals(o.getRegistrationNo()) && contractNo.equals(o.getContractNo()) && customerId.equals(o.getCustomerId());
+        return name.equals(o.getName()) && nationalId.equals(o.getName()) && registrationNo.equals(o.getRegistrationNo()) && contractNo.equals(o.getContractNo());
+    }
+
+    @Override
+    public String toString() {
+        return "Organization{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", nationalId='" + nationalId + '\'' +
+                ", registrationNo='" + registrationNo + '\'' +
+                ", contractNo='" + contractNo + '\'' +
+                ", phoneNumbers=" + phoneNumbers +
+                ", representatives=" + representatives +
+                '}';
     }
 }

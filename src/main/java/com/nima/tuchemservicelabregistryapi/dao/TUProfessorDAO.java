@@ -9,11 +9,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TUProfessorDAO implements DAO<TUProfessor> {
-    JdbcTemplate jdbcTemplate;
-    PersonDAO personDao;
-    EduGroupDAO eduGroupDao;
+    private final JdbcTemplate jdbcTemplate;
+    private final EduGroupDAO eduGroupDao;
 
-    private RowMapper<TUProfessor> rowMapper = (rs, rowNum) -> {
+    private final RowMapper<TUProfessor> rowMapper = (rs, rowNum) -> {
         TUProfessor professor = new TUProfessor();
         professor.setId(rs.getLong("PersonID"));
         professor.setNationalNumber(rs.getString("PNationalNumber"));
@@ -22,13 +21,10 @@ public class TUProfessorDAO implements DAO<TUProfessor> {
         professor.setPhoneNumber(rs.getString("PPhoneNumber"));
         professor.setEmail(rs.getString("PEmail"));
         professor.setGender((Boolean) rs.getObject("PGender"));
-        professor.setCustomerId((Long) rs.getObject("CustomerID"));
         professor.setTypeStdn(rs.getBoolean("PTypeStdn"));
         professor.setTypeProf(rs.getBoolean("PTypeProf"));
         professor.setTypeLab(rs.getBoolean("PTypeLab"));
         professor.setTypeOrg(rs.getBoolean("PTypeOrg"));
-        professor.setUsername(rs.getString("PUsername"));
-        professor.setPassword(rs.getString("PPassword"));
         professor.setPersonnelCode(rs.getString("ProfPersonnelCode"));
         professor.setEduGroupId((Long) rs.getObject("ProfEduGroupID"));
         professor.setGrantIssueDate(rs.getTimestamp("ProfGrantIssueDate"));
@@ -37,9 +33,8 @@ public class TUProfessorDAO implements DAO<TUProfessor> {
         return professor;
     };
 
-    public TUProfessorDAO(JdbcTemplate jdbcTemplate, PersonDAO personDao, EduGroupDAO eduGroupDao) {
+    public TUProfessorDAO(JdbcTemplate jdbcTemplate, EduGroupDAO eduGroupDao) {
         this.jdbcTemplate = jdbcTemplate;
-        this.personDao = personDao;
         this.eduGroupDao = eduGroupDao;
     }
 
@@ -85,34 +80,23 @@ public class TUProfessorDAO implements DAO<TUProfessor> {
 
     @Override
     public int create(TUProfessor professor) {
-        if (professor.getId() != 0) {
-            if (professor.getUsername() == null || professor.getUsername() == "") {
-                professor.setUsername(professor.getNationalNumber());
-                professor.setPassword(professor.getNationalNumber());
-            }
-            jdbcTemplate.update("UPDATE Person SET PType=?, PUsername=?, PPassword=? WHERE PersonID=?",
-                    3, professor.getNationalNumber(), professor.getNationalNumber(), professor.getId());
-
-            return jdbcTemplate.update("INSERT INTO TUProfessor(PersonID, ProfPersonnelCode, ProfEduGroupID, ProfGrantIssueDate, ProfGrantAmount, ProfGrantCredibleUntil) VALUES(?,?,?,?,?,?)",
-                    professor.getId(), professor.getPersonnelCode(), professor.getEduGroupId(), professor.getGrantIssueDate(), professor.getGrantAmount(), professor.getGrantCredibleUntil());
-        }
-
-        return jdbcTemplate.update("CALL CreateTUProfessor(?,?,?,?,?,?,?,?,?,?,?,?,?,?)", professor.getNationalNumber(), professor.getFirstName(), professor.getLastName(),
-                professor.getPhoneNumber(), professor.getEmail(), professor.getGender(), professor.getCustomerId() == 0 ? null : professor.getCustomerId(),
-                professor.getNationalNumber(), professor.getNationalNumber(), professor.getPersonnelCode(), professor.getEduGroupId(), professor.getGrantIssueDate(), professor.getGrantAmount(), professor.getGrantCredibleUntil());
+        return jdbcTemplate.update("INSERT INTO TUProfessor (PersonID, ProfPersonnelCode, ProfEduGroupID) VALUES (?, ?, ?)",
+                professor.getId(), professor.getPersonnelCode(), professor.getEduGroupId());
     }
 
     @Override
     public int update(TUProfessor professor) {
-        return jdbcTemplate.update("CALL UpdateTUProfessor(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", professor.getId(), professor.getNationalNumber(), professor.getFirstName(),
-                professor.getLastName(), professor.getPhoneNumber(), professor.getEmail(), professor.getGender(), professor.getCustomerId() == 0 ? null : professor.getCustomerId(),
-                professor.getUsername(), professor.getPassword(), professor.getPersonnelCode(), professor.getEduGroupId(), professor.getGrantIssueDate(), professor.getGrantAmount(), professor.getGrantCredibleUntil());
+        return jdbcTemplate.update("UPDATE TUProfessor SET ProfPersonnelCode=?, ProfEduGroupID=? WHERE PersonID=?",
+                professor.getPersonnelCode(), professor.getEduGroupId(), professor.getId());
+    }
+
+    public int updateGrant(TUProfessor profGrant) {
+        return jdbcTemplate.update("UPDATE TUProfessor SET ProfGrantIssueDate=?, ProfGrantAmount=, ProfGrantCredibleUntil=? WHERE PersonID=?",
+                profGrant.getGrantIssueDate(), profGrant.getGrantAmount(), profGrant.getGrantCredibleUntil(), profGrant.getId());
     }
 
     @Override
     public int delete(Long id) {
-//        jdbcTemplate.update("UPDATE Person SET PType=0 WHERE PersonID=?", id);
-//        return jdbcTemplate.update("UPDATE TUProfessor SET DDate=CURRENT_TIMESTAMP() WHERE PersonID=?", id);
-        return jdbcTemplate.update("CALL DeleteTUProfessor(?)", id);
+        return jdbcTemplate.update("EXECUTE DeleteTUProfessor ?", id);
     }
 }

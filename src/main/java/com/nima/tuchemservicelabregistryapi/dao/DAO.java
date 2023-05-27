@@ -1,6 +1,5 @@
 package com.nima.tuchemservicelabregistryapi.dao;
 import com.nima.tuchemservicelabregistryapi.model.Data;
-import java.util.Optional;
 
 public interface DAO<T> {
     Data<T> list(Data<T> template);

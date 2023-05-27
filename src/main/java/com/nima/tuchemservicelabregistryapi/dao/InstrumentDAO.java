@@ -11,9 +11,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class InstrumentDAO implements DAO<Instrument> {
 
-    private JdbcTemplate jdbcTemplate;
-    private InstrumentOperatorDAO operatorDAO;
-    private RowMapper<Instrument> rowMapper = (rs, rowNum) -> {
+    private final JdbcTemplate jdbcTemplate;
+    private final InstrumentOperatorDAO operatorDAO;
+
+    private final RowMapper<Instrument> rowMapper = (rs, rowNum) -> {
         Instrument instrument = new Instrument();
         instrument.setId(rs.getLong("InstrumentID"));
         instrument.setName(rs.getString("IName"));

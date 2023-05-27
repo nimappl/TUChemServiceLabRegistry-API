@@ -8,13 +8,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 public class TUStudentDAO implements DAO<TUStudent> {
-    private JdbcTemplate jdbcTemplate;
-    private final PersonDAO personDAO;
+    private final JdbcTemplate jdbcTemplate;
     private final EduFieldDAO eduFieldDAO;
 
-    private RowMapper<TUStudent> rowMapper = (rs, rowNum) -> {
+    private final RowMapper<TUStudent> rowMapper = (rs, rowNum) -> {
         TUStudent student = new TUStudent();
         student.setId(rs.getLong("PersonID"));
         student.setNationalNumber(rs.getString("PNationalNumber"));
@@ -23,22 +24,18 @@ public class TUStudentDAO implements DAO<TUStudent> {
         student.setPhoneNumber(rs.getString("PPhoneNumber"));
         student.setEmail(rs.getString("PEmail"));
         student.setGender((Boolean) rs.getObject("PGender"));
-        student.setCustomerId((Long) rs.getObject("CustomerID"));
         student.setTypeStdn(rs.getBoolean("PTypeStdn"));
         student.setTypeProf(rs.getBoolean("PTypeProf"));
         student.setTypeLab(rs.getBoolean("PTypeLab"));
         student.setTypeOrg(rs.getBoolean("PTypeOrg"));
-        student.setUsername(rs.getString("PUsername"));
-        student.setPassword(rs.getString("PPassword"));
         student.setStCode(rs.getString("StCode"));
-        student.setLevel((Short) rs.getObject("StLevel"));
+        student.setEduLevel((Short) rs.getObject("StLevel"));
         student.setEduFieldId(rs.getLong("StEduFieldID"));
         return student;
     };
 
     public TUStudentDAO(JdbcTemplate jdbcTemplate, PersonDAO personDAO, EduFieldDAO eduFieldDAO) {
         this.jdbcTemplate = jdbcTemplate;
-        this.personDAO = personDAO;
         this.eduFieldDAO = eduFieldDAO;
     }
 
@@ -52,6 +49,7 @@ public class TUStudentDAO implements DAO<TUStudent> {
                 student.setEduField(eduFieldDAO.getById(student.getEduFieldId()));
             }
         });
+        template.filters = new ArrayList<>();
 
         return template;
     }
@@ -72,24 +70,14 @@ public class TUStudentDAO implements DAO<TUStudent> {
 
     @Override
     public int create(TUStudent student) {
-        int id;
-        if (student.getId() == null) {
-            id = personDAO.create(student.asPerson());
-        } else {
-            id = (int)((long) student.getId());
-        }
-
-        jdbcTemplate.update("UPDATE Person SET PTypeStdn=1 WHERE PersonID=?", id);
-        jdbcTemplate.update("INSERT INTO TUStudent (PersonID, StCode, StLevel, StEduFieldID) VALUES (?, ?, ?, ?)",
-                id, student.getStCode(), student.getLevel(), student.getEduFieldId());
-        return 1;
+        return jdbcTemplate.update("INSERT INTO TUStudent (PersonID, StCode, StLevel, StEduFieldID) VALUES (?, ?, ?, ?)",
+                student.getId(), student.getStCode(), student.getEduLevel(), student.getEduFieldId());
     }
 
     @Override
     public int update(TUStudent student) {
-        personDAO.update(student.asPerson());
         return jdbcTemplate.update("UPDATE TUStudent SET StCode=?, StLevel=?, StEduFieldID=? WHERE PersonID=?",
-                student.getStCode(), student.getLevel(), student.getEduFieldId(), student.getId());
+                student.getStCode(), student.getEduLevel(), student.getEduFieldId(), student.getId());
     }
 
     @Override

@@ -8,12 +8,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 public class LabPersonnelDAO implements DAO<LabPersonnel> {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final PersonDAO personDAO;
 
-    private RowMapper<LabPersonnel> rowMapper = (rs, rowNum) -> {
+    private final RowMapper<LabPersonnel> rowMapper = (rs, rowNum) -> {
         LabPersonnel personnel = new LabPersonnel();
         personnel.setId(rs.getLong("PersonID"));
         personnel.setNationalNumber(rs.getString("PNationalNumber"));
@@ -22,13 +24,10 @@ public class LabPersonnelDAO implements DAO<LabPersonnel> {
         personnel.setPhoneNumber(rs.getString("PPhoneNumber"));
         personnel.setEmail(rs.getString("PEmail"));
         personnel.setGender((Boolean) rs.getObject("PGender"));
-        personnel.setCustomerId((Long) rs.getObject("CustomerID"));
         personnel.setTypeStdn(rs.getBoolean("PTypeStdn"));
         personnel.setTypeProf(rs.getBoolean("PTypeProf"));
         personnel.setTypeLab(rs.getBoolean("PTypeLab"));
         personnel.setTypeOrg(rs.getBoolean("PTypeOrg"));
-        personnel.setUsername(rs.getString("PUsername"));
-        personnel.setPassword(rs.getString("PPassword"));
         personnel.setPersonnelCode(rs.getString("LPCode"));
         personnel.setPost(rs.getString("LPPost"));
         return personnel;
@@ -44,6 +43,7 @@ public class LabPersonnelDAO implements DAO<LabPersonnel> {
         template.filters.add(new Filter("PTypeLab", "1"));
         template.count = jdbcTemplate.queryForObject(template.countQuery("vLabPersonnel", "PersonID"), Integer.class);
         template.records = jdbcTemplate.query(template.selectQuery("vLabPersonnel", "PersonID"), rowMapper);
+        template.filters = new ArrayList<>();
         return template;
     }
 
@@ -61,29 +61,19 @@ public class LabPersonnelDAO implements DAO<LabPersonnel> {
 
     @Override
     public int create(LabPersonnel personnel) {
-        int id;
-        if (personnel.getId() == null) {
-            id = personDAO.create(personnel.asPerson());
-        } else {
-            id = (int)((long) personnel.getId());
-        }
-
         jdbcTemplate.update("INSERT INTO LabPersonnel (PersonID, LPCode, LPPost, LPRole) VALUES (?, ?, ?, ?)",
-                id, personnel.getPersonnelCode(), personnel.getPost(), personnel.getRole());
-        jdbcTemplate.update("UPDATE Person SET PTypeLab=1 WHERE PersonID=?", id);
+                personnel.getId(), personnel.getPersonnelCode(), personnel.getPost(), personnel.getRole());
         return 1;
     }
 
     @Override
     public int update(LabPersonnel personnel) {
-        personDAO.update(personnel.asPerson());
         return jdbcTemplate.update("UPDATE LabPersonnel SET LPCode=?, LPPost=?, LPRole=? WHERE PersonID=?",
                 personnel.getPersonnelCode(), personnel.getPost(), personnel.getRole(), personnel.getId());
     }
 
     @Override
     public int delete(Long id) {
-        personDAO.delete(id);
-        return jdbcTemplate.update("UPDATE LabPersonnel SET DDate=GETDATE() WHERE PersonID=?", id);
+        return jdbcTemplate.update("EXECUTE DeleteLabPersonnel ?", id);
     }
 }

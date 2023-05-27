@@ -6,15 +6,15 @@ public class Payment {
     private Long id;
     private Timestamp date;
     private Long amount;
-    private Long serviceId;
+    private Long accountId;
 
     public Payment() {}
 
-    public Payment(Long id, Timestamp date, Long amount, Long serviceId) {
+    public Payment(Long id, Timestamp date, Long amount, Long accountId) {
         this.id = id;
         this.date = date;
         this.amount = amount;
-        this.serviceId = serviceId;
+        this.accountId = accountId;
     }
 
     public Long getId() {
@@ -41,11 +41,11 @@ public class Payment {
         this.amount = amount;
     }
 
-    public Long getServiceId() {
-        return serviceId;
+    public Long getAccountId() {
+        return accountId;
     }
 
-    public void setServiceId(Long serviceId) {
-        this.serviceId = serviceId;
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
     }
 }

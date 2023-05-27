@@ -8,7 +8,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EduGroupDAO implements DAO<EduGroup> {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+
     private RowMapper<EduGroup> rowMapper = (rs, rowNum) -> {
         EduGroup eduGroup = new EduGroup();
         eduGroup.setId(rs.getLong("EduGroupID"));
