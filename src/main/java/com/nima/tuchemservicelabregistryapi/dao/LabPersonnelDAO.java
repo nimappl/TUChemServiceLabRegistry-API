@@ -13,7 +13,6 @@ import java.util.ArrayList;
 @Component
 public class LabPersonnelDAO implements DAO<LabPersonnel> {
     private final JdbcTemplate jdbcTemplate;
-    private final PersonDAO personDAO;
 
     private final RowMapper<LabPersonnel> rowMapper = (rs, rowNum) -> {
         LabPersonnel personnel = new LabPersonnel();
@@ -33,9 +32,8 @@ public class LabPersonnelDAO implements DAO<LabPersonnel> {
         return personnel;
     };
 
-    public LabPersonnelDAO(JdbcTemplate jdbcTemplate, PersonDAO personDAO) {
+    public LabPersonnelDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.personDAO = personDAO;
     }
 
     @Override
@@ -59,17 +57,25 @@ public class LabPersonnelDAO implements DAO<LabPersonnel> {
         return personnel;
     }
 
-    @Override
-    public int create(LabPersonnel personnel) {
-        jdbcTemplate.update("INSERT INTO LabPersonnel (PersonID, LPCode, LPPost, LPRole) VALUES (?, ?, ?, ?)",
-                personnel.getId(), personnel.getPersonnelCode(), personnel.getPost(), personnel.getRole());
+    public int updateTable(LabPersonnel personnel) {
+        if (jdbcTemplate.queryForObject("SELECT COUNT(*) FROM LabPersonnel WHERE PersonID=" + personnel.getId(), Integer.class) == 1) {
+            jdbcTemplate.update("UPDATE LabPersonnel SET LPCode=?, LPPost=?, DDate=NULL WHERE PersonID=?",
+                    personnel.getPersonnelCode(), personnel.getPost(), personnel.getId());
+        } else {
+            jdbcTemplate.update("INSERT INTO LabPersonnel (PersonID, LPCode, LPPost, LPRole) VALUES (?, ?, ?, ?)",
+                    personnel.getId(), personnel.getPersonnelCode(), personnel.getPost(), personnel.getRole());
+        }
         return 1;
     }
 
     @Override
+    public int create(LabPersonnel personnel) {
+        return updateTable(personnel);
+    }
+
+    @Override
     public int update(LabPersonnel personnel) {
-        return jdbcTemplate.update("UPDATE LabPersonnel SET LPCode=?, LPPost=?, LPRole=? WHERE PersonID=?",
-                personnel.getPersonnelCode(), personnel.getPost(), personnel.getRole(), personnel.getId());
+        return updateTable(personnel);
     }
 
     @Override

@@ -15,7 +15,6 @@ import java.util.List;
 @Component
 public class OrgRepresentativeDAO implements DAO<OrgRepresentative> {
     private final JdbcTemplate jdbcTemplate;
-    private final PersonDAO personDAO;
 
     private final RowMapper<OrgRepresentative> rowMapper = (rs, rowNum) -> {
         OrgRepresentative orgRepresentative = new OrgRepresentative();
@@ -33,9 +32,8 @@ public class OrgRepresentativeDAO implements DAO<OrgRepresentative> {
         return orgRepresentative;
     };
 
-    public OrgRepresentativeDAO(JdbcTemplate jdbcTemplate, PersonDAO personDAO) {
+    public OrgRepresentativeDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.personDAO = personDAO;
     }
 
     @Override

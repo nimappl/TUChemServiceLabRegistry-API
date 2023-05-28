@@ -34,7 +34,7 @@ public class TUStudentDAO implements DAO<TUStudent> {
         return student;
     };
 
-    public TUStudentDAO(JdbcTemplate jdbcTemplate, PersonDAO personDAO, EduFieldDAO eduFieldDAO) {
+    public TUStudentDAO(JdbcTemplate jdbcTemplate, EduFieldDAO eduFieldDAO) {
         this.jdbcTemplate = jdbcTemplate;
         this.eduFieldDAO = eduFieldDAO;
     }
@@ -68,16 +68,25 @@ public class TUStudentDAO implements DAO<TUStudent> {
         return student;
     }
 
+    public int updateTable(TUStudent student) {
+        if (jdbcTemplate.queryForObject("SELECT COUNT(*) FROM TUStudent WHERE PersonID=" + student.getId(), Integer.class) == 1) {
+            jdbcTemplate.update("UPDATE TUStudent SET StCode=?, StLevel=?, StEduFieldID=?, DDate=NULL WHERE PersonID=?",
+                    student.getStCode(), student.getEduLevel(), student.getEduFieldId(), student.getId());
+        } else {
+            jdbcTemplate.update("INSERT INTO TUStudent (PersonID, StCode, StLevel, StEduFieldID) VALUES (?, ?, ?, ?)",
+                    student.getId(), student.getStCode(), student.getEduLevel(), student.getEduFieldId());
+        }
+        return 1;
+    }
+
     @Override
     public int create(TUStudent student) {
-        return jdbcTemplate.update("INSERT INTO TUStudent (PersonID, StCode, StLevel, StEduFieldID) VALUES (?, ?, ?, ?)",
-                student.getId(), student.getStCode(), student.getEduLevel(), student.getEduFieldId());
+        return updateTable(student);
     }
 
     @Override
     public int update(TUStudent student) {
-        return jdbcTemplate.update("UPDATE TUStudent SET StCode=?, StLevel=?, StEduFieldID=? WHERE PersonID=?",
-                student.getStCode(), student.getEduLevel(), student.getEduFieldId(), student.getId());
+        return updateTable(student);
     }
 
     @Override

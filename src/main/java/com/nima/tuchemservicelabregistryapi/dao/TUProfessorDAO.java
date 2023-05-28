@@ -78,21 +78,25 @@ public class TUProfessorDAO implements DAO<TUProfessor> {
         return professor;
     }
 
+    public int updateTable(TUProfessor professor) {
+        if (jdbcTemplate.queryForObject("SELECT COUNT(*) FROM TUProfessor WHERE PersonID=" + professor.getId(), Integer.class) == 1) {
+            jdbcTemplate.update("UPDATE TUProfessor SET ProfPersonnelCode=?, ProfEduGroupID=?, DDate=NULL WHERE PersonID=?",
+                    professor.getPersonnelCode(), professor.getEduGroupId(), professor.getId());
+        } else {
+            jdbcTemplate.update("INSERT INTO TUProfessor (PersonID, ProfPersonnelCode, ProfEduGroupID) VALUES (?, ?, ?)",
+                    professor.getId(), professor.getPersonnelCode(), professor.getEduGroupId());
+        }
+        return 1;
+    }
+
     @Override
     public int create(TUProfessor professor) {
-        return jdbcTemplate.update("INSERT INTO TUProfessor (PersonID, ProfPersonnelCode, ProfEduGroupID) VALUES (?, ?, ?)",
-                professor.getId(), professor.getPersonnelCode(), professor.getEduGroupId());
+        return updateTable(professor);
     }
 
     @Override
     public int update(TUProfessor professor) {
-        return jdbcTemplate.update("UPDATE TUProfessor SET ProfPersonnelCode=?, ProfEduGroupID=? WHERE PersonID=?",
-                professor.getPersonnelCode(), professor.getEduGroupId(), professor.getId());
-    }
-
-    public int updateGrant(TUProfessor profGrant) {
-        return jdbcTemplate.update("UPDATE TUProfessor SET ProfGrantIssueDate=?, ProfGrantAmount=, ProfGrantCredibleUntil=? WHERE PersonID=?",
-                profGrant.getGrantIssueDate(), profGrant.getGrantAmount(), profGrant.getGrantCredibleUntil(), profGrant.getId());
+        return updateTable(professor);
     }
 
     @Override
