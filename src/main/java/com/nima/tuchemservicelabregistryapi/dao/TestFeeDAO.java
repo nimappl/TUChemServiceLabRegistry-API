@@ -16,11 +16,11 @@ public class TestFeeDAO implements DAO<TestFee> {
     private final RowMapper<TestFee> rowMapper = (rs, rowNum) -> {
         TestFee fee = new TestFee();
         fee.setId(rs.getLong("TFeeID"));
-        fee.setAmount(rs.getLong("TFAmount"));
+        fee.setAmount((Integer) rs.getObject("TFAmount"));
         fee.setDate(rs.getTimestamp("TFDate"));
-        fee.setStep(rs.getShort("TFStep"));
-        fee.setTestId(rs.getLong("TestID"));
-        fee.setType(rs.getShort("TFBase"));
+        fee.setStep((Short) rs.getObject("TFStep"));
+        fee.setTestId((Long) rs.getObject("TestID"));
+        fee.setType((Short) rs.getObject("TFBase"));
         return fee;
     };
 

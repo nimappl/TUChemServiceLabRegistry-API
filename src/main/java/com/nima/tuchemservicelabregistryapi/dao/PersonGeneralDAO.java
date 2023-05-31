@@ -38,9 +38,6 @@ public class PersonGeneralDAO implements DAO<PersonGeneral> {
         person.setLabPost(rs.getString("LPPost"));
         person.setProfPersonnelCode(rs.getString("ProfPersonnelCode"));
         person.setProfEduGroupId((Long) rs.getObject("ProfEduGroupID"));
-        person.setProfGrantIssueDate(rs.getTimestamp("ProfGrantIssueDate"));
-        person.setProfGrantAmount((Long) rs.getObject("ProfGrantAmount"));
-        person.setProfGrantCredibleUntil(rs.getTimestamp("ProfGrantCredibleUntil"));
         person.setStdnCode(rs.getString("StCode"));
         person.setStdnEduLevel((Short) rs.getObject("StLevel"));
         person.setStdnEduFieldId((Long) rs.getObject("StEduFieldID"));

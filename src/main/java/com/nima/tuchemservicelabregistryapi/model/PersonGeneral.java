@@ -9,9 +9,6 @@ public class PersonGeneral extends Person {
     private String profPersonnelCode;
     private Long profEduGroupId;
     private EduGroup profEduGroup;
-    private Timestamp profGrantIssueDate;
-    private Long profGrantAmount;
-    private Timestamp profGrantCredibleUntil;
     private String stdnCode;
     private Short stdnEduLevel;
     private Long stdnEduFieldId;
@@ -20,16 +17,13 @@ public class PersonGeneral extends Person {
 
     public PersonGeneral() {}
 
-    public PersonGeneral(Long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, Boolean gender, Boolean typeStdn, Boolean typeProf, Boolean typeLab, Boolean typeOrg, String labPersonnelCode, String labPost, String profPersonnelCode, Long profEduGroupId, EduGroup profEduGroup, Timestamp profGrantIssueDate, Long profGrantAmount, Timestamp profGrantCredibleUntil, String stdnCode, Short stdnLevel, Long stdnEduFieldId, EduField stdnEduField, List<Organization> orgRepOrganizations) {
+    public PersonGeneral(Long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, Boolean gender, Boolean typeStdn, Boolean typeProf, Boolean typeLab, Boolean typeOrg, String labPersonnelCode, String labPost, String profPersonnelCode, Long profEduGroupId, EduGroup profEduGroup, String stdnCode, Short stdnLevel, Long stdnEduFieldId, EduField stdnEduField, List<Organization> orgRepOrganizations) {
         super(id, nationalNumber, firstName, lastName, phoneNumber, email, gender, typeStdn, typeProf, typeLab, typeOrg);
         this.labPersonnelCode = labPersonnelCode;
         this.labPost = labPost;
         this.profPersonnelCode = profPersonnelCode;
         this.profEduGroupId = profEduGroupId;
         this.profEduGroup = profEduGroup;
-        this.profGrantIssueDate = profGrantIssueDate;
-        this.profGrantAmount = profGrantAmount;
-        this.profGrantCredibleUntil = profGrantCredibleUntil;
         this.stdnCode = stdnCode;
         this.stdnEduLevel = stdnLevel;
         this.stdnEduFieldId = stdnEduFieldId;
@@ -75,30 +69,6 @@ public class PersonGeneral extends Person {
 
     public void setProfEduGroup(EduGroup profEduGroup) {
         this.profEduGroup = profEduGroup;
-    }
-
-    public Timestamp getProfGrantIssueDate() {
-        return profGrantIssueDate;
-    }
-
-    public void setProfGrantIssueDate(Timestamp profGrantIssueDate) {
-        this.profGrantIssueDate = profGrantIssueDate;
-    }
-
-    public Long getProfGrantAmount() {
-        return profGrantAmount;
-    }
-
-    public void setProfGrantAmount(Long profGrantAmount) {
-        this.profGrantAmount = profGrantAmount;
-    }
-
-    public Timestamp getProfGrantCredibleUntil() {
-        return profGrantCredibleUntil;
-    }
-
-    public void setProfGrantCredibleUntil(Timestamp profGrantCredibleUntil) {
-        this.profGrantCredibleUntil = profGrantCredibleUntil;
     }
 
     public String getStdnCode() {
@@ -155,9 +125,6 @@ public class PersonGeneral extends Person {
         data.setEduGroup(profEduGroup);
         data.setEduGroupId(profEduGroupId);
         data.setPersonnelCode(profPersonnelCode);
-        data.setGrantAmount(profGrantAmount);
-        data.setGrantCredibleUntil(profGrantCredibleUntil);
-        data.setGrantAmount(profGrantAmount);
         return data;
     }
 

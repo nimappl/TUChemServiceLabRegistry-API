@@ -27,9 +27,6 @@ public class TUProfessorDAO implements DAO<TUProfessor> {
         professor.setTypeOrg(rs.getBoolean("PTypeOrg"));
         professor.setPersonnelCode(rs.getString("ProfPersonnelCode"));
         professor.setEduGroupId((Long) rs.getObject("ProfEduGroupID"));
-        professor.setGrantIssueDate(rs.getTimestamp("ProfGrantIssueDate"));
-        professor.setGrantAmount((Long) rs.getObject("ProfGrantAmount"));
-        professor.setGrantCredibleUntil(rs.getTimestamp("ProfGrantCredibleUntil"));
         return professor;
     };
 

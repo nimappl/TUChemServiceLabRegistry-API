@@ -6,14 +6,14 @@ import java.util.Objects;
 public class TestFee {
     private Long id;
     private Short type;
-    private Long amount;
+    private Integer amount;
     private Long testId;
     private Timestamp date;
     private Short step;
 
     public TestFee() {}
 
-    public TestFee(Long id, Short type, Long amount, Long testId, Timestamp date, Short step) {
+    public TestFee(Long id, Short type, Integer amount, Long testId, Timestamp date, Short step) {
         this.id = id;
         this.type = type;
         this.amount = amount;
@@ -38,11 +38,11 @@ public class TestFee {
         this.type = type;
     }
 
-    public Long getAmount() {
+    public Integer getAmount() {
         return amount;
     }
 
-    public void setAmount(Long amount) {
+    public void setAmount(Integer amount) {
         this.amount = amount;
     }
 
@@ -71,7 +71,7 @@ public class TestFee {
     }
 
     public boolean isEqualTo(TestFee fee) {
-        return id.equals(fee.getId()) && type.equals(fee.getType()) && amount.equals(fee.getAmount()) && testId.equals(fee.getTestId()) && step.equals(fee.getStep());
+        return id.equals(fee.getId()) && type.equals(fee.getType()) && amount.equals(fee.getAmount()) && testId.equals(fee.getTestId()) && step == null ? fee.getStep() == null : step.equals(fee.getStep());
     }
 
     @Override
