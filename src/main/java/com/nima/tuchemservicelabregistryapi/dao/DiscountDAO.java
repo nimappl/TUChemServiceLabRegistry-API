@@ -34,14 +34,9 @@ public class DiscountDAO implements DAO<Discount> {
         return template;
     }
 
-    public List<Discount> discountsOfTest(long testId, String dName) {
-        String query = "SELECT * FROM vDiscountsOfTests WHERE TestID=" + testId;
-        query += (" AND TDName LIKE '%" + dName + "%' OR TDName IS NULL");
-        return jdbcTemplate.query(query, rowMapper);
-    }
-
     public List<Discount> discountsOfTest(long testId) {
-        return discountsOfTest(testId, "");
+        String query = "SELECT * FROM vDiscountsOfTests WHERE TestID=" + testId;
+        return jdbcTemplate.query(query, rowMapper);
     }
 
     public List<Long> getAssociatedTestsForId (long discountId) {

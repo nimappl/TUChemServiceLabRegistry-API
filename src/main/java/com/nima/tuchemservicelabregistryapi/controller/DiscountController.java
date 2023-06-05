@@ -35,10 +35,9 @@ public class DiscountController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @GetMapping("/for-test/{testId}/{dName}")
-    public ResponseEntity<List<Discount>> getTestDiscounts(@PathVariable("testId") Long testId,
-                                                           @PathVariable("dName") String dName) {
-        return new ResponseEntity(dao.discountsOfTest(testId, dName), HttpStatus.OK);
+    @GetMapping("/for-test/{testId}")
+    public ResponseEntity<List<Discount>> getTestDiscounts(@PathVariable("testId") Long testId) {
+        return new ResponseEntity(dao.discountsOfTest(testId), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
