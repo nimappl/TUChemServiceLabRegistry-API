@@ -8,31 +8,43 @@ public class Service {
     private Timestamp date;
     private Integer sampleQuantity;
     private Integer testTime;
-    private Long price;
+    private Long additionalCosts;
+    private Long totalPrice;
+    private Long testId;
     private Test test;
+    private Long testFeeId;
     private TestFee testFee;
     private List<TestPrep> testPreps;
+    private Long servingPersonnelId;
     private LabPersonnel servingPersonnel;
-    private Account customer;
-    private Long customerId;
+    private Person personCustomer;
+    private Organization orgCustomer;
+    private Long customerAccountId;
+    private Account customerAccount;
     private List<ServiceResultFile> resultFiles;
     private List<Discount> discounts;
     private String considerations;
 
     public Service() {}
 
-    public Service(Long id, Timestamp date, Integer sampleQuantity, Integer testTime, Long price, Test test, TestFee testFee, List<TestPrep> testPreps, LabPersonnel servingPersonnel, Account customer, Long customerId, List<ServiceResultFile> resultFiles, List<Discount> discounts, String considerations) {
+    public Service(Long id, Timestamp date, Integer sampleQuantity, Integer testTime, Long additionalCosts, Long totalPrice, Long testId, Test test, Long testFeeId, TestFee testFee, List<TestPrep> testPreps, Long servingPersonnelId, LabPersonnel servingPersonnel, Person personCustomer, Organization orgCustomer, Long customerAccountId, Account customerAccount, List<ServiceResultFile> resultFiles, List<Discount> discounts, String considerations) {
         this.id = id;
         this.date = date;
         this.sampleQuantity = sampleQuantity;
         this.testTime = testTime;
-        this.price = price;
+        this.additionalCosts = additionalCosts;
+        this.totalPrice = totalPrice;
+        this.testId = testId;
         this.test = test;
+        this.testFeeId = testFeeId;
         this.testFee = testFee;
         this.testPreps = testPreps;
+        this.servingPersonnelId = servingPersonnelId;
         this.servingPersonnel = servingPersonnel;
-        this.customer = customer;
-        this.customerId = customerId;
+        this.personCustomer = personCustomer;
+        this.orgCustomer = orgCustomer;
+        this.customerAccountId = customerAccountId;
+        this.customerAccount = customerAccount;
         this.resultFiles = resultFiles;
         this.discounts = discounts;
         this.considerations = considerations;
@@ -70,12 +82,28 @@ public class Service {
         this.testTime = testTime;
     }
 
-    public Long getPrice() {
-        return price;
+    public Long getAdditionalCosts() {
+        return additionalCosts;
     }
 
-    public void setPrice(Long price) {
-        this.price = price;
+    public void setAdditionalCosts(Long additionalCosts) {
+        this.additionalCosts = additionalCosts;
+    }
+
+    public Long getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Long totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public Long getTestId() {
+        return testId;
+    }
+
+    public void setTestId(Long testId) {
+        this.testId = testId;
     }
 
     public Test getTest() {
@@ -84,6 +112,14 @@ public class Service {
 
     public void setTest(Test test) {
         this.test = test;
+    }
+
+    public Long getTestFeeId() {
+        return testFeeId;
+    }
+
+    public void setTestFeeId(Long testFeeId) {
+        this.testFeeId = testFeeId;
     }
 
     public TestFee getTestFee() {
@@ -102,6 +138,14 @@ public class Service {
         this.testPreps = testPreps;
     }
 
+    public Long getServingPersonnelId() {
+        return servingPersonnelId;
+    }
+
+    public void setServingPersonnelId(Long servingPersonnelId) {
+        this.servingPersonnelId = servingPersonnelId;
+    }
+
     public LabPersonnel getServingPersonnel() {
         return servingPersonnel;
     }
@@ -110,20 +154,36 @@ public class Service {
         this.servingPersonnel = servingPersonnel;
     }
 
-    public Account getCustomer() {
-        return customer;
+    public Person getPersonCustomer() {
+        return personCustomer;
     }
 
-    public void setCustomer(Account customer) {
-        this.customer = customer;
+    public void setPersonCustomer(Person personCustomer) {
+        this.personCustomer = personCustomer;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    public Organization getOrgCustomer() {
+        return orgCustomer;
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public void setOrgCustomer(Organization orgCustomer) {
+        this.orgCustomer = orgCustomer;
+    }
+
+    public Long getCustomerAccountId() {
+        return customerAccountId;
+    }
+
+    public void setCustomerAccountId(Long customerAccountId) {
+        this.customerAccountId = customerAccountId;
+    }
+
+    public Account getCustomerAccount() {
+        return customerAccount;
+    }
+
+    public void setCustomerAccount(Account customerAccount) {
+        this.customerAccount = customerAccount;
     }
 
     public List<ServiceResultFile> getResultFiles() {

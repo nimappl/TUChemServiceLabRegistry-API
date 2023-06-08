@@ -71,7 +71,11 @@ public class TestFee {
     }
 
     public boolean isEqualTo(TestFee fee) {
-        return id.equals(fee.getId()) && type.equals(fee.getType()) && amount.equals(fee.getAmount()) && testId.equals(fee.getTestId()) && step == null ? fee.getStep() == null : step.equals(fee.getStep());
+        return id.equals(fee.getId()) &&
+               type.equals(fee.getType()) &&
+               amount.equals(fee.getAmount()) &&
+               testId.equals(fee.getTestId()) &&
+                (step == null ? fee.getStep() == null : step.equals(fee.getStep()));
     }
 
     @Override

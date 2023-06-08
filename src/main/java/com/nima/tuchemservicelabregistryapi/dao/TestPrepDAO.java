@@ -33,9 +33,14 @@ public class TestPrepDAO implements DAO<TestPrep> {
         return template;
     }
 
-    public List<TestPrep> getByTestId(long testId) {
-        String query = "SELECT * FROM TestPrep WHERE DDate IS NULL AND TestID=" + testId;
-        return jdbcTemplate.query(query, rowMapper);
+    public List<TestPrep> getByTestId(Long testId) {
+        String sql = "SELECT * FROM TestPrep WHERE DDate IS NULL AND TestID=" + testId;
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public List<TestPrep> getByServiceId(Long serviceId) {
+        String sql = "SELECT * FROM vTestPrepsOfServices WHERE ServiceID=" + serviceId;
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     @Override
