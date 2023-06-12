@@ -52,6 +52,15 @@ public class DiscountDAO implements DAO<Discount> {
         });
     }
 
+    public int addForService(long discountId, long serviceId) {
+        return jdbcTemplate.update("INSERT INTO Service_Discount (ServiceID, DiscountID) VALUES (?, ?)",
+                serviceId, discountId);
+    }
+
+    public int removeForService(long serviceId) {
+        return jdbcTemplate.update("DELETE FROM Service_Discount WHERE ServiceID=" + serviceId);
+    }
+
     @Override
     public Discount getById(Long id) {
         String sql = "SELECT * FROM Discount WHERE DiscountID = ?";
@@ -66,18 +75,21 @@ public class DiscountDAO implements DAO<Discount> {
 
     @Override
     public int create(Discount discount) {
-        return jdbcTemplate.update("INSERT INTO Discount(TDType, TDPercent, TDMinSamples, TDName) VALUES (?,?,?,?)",
-                discount.getType(), discount.getPercent(), discount.getMinSamples(), discount.getName());
+        int id;
+        id = jdbcTemplate.queryForObject("EXECUTE CreateDiscount ?, ?, ?, ?",
+                new Object[]{discount.getType(), discount.getPercent(), discount.getMinSamples(), discount.getName()},
+                Integer.class);
+        return id;
     }
 
     @Override
     public int update(Discount discount) {
-        return jdbcTemplate.update("EXEC UpdateDiscount @id=?, @type=?, @percent=?, @date=?, @minSamples=?, @name=?",
+        return jdbcTemplate.update("EXECUTE UpdateDiscount @id=?, @type=?, @percent=?, @date=?, @minSamples=?, @name=?",
                 discount.getId(), discount.getType(), discount.getPercent(), discount.getDate(), discount.getMinSamples(), discount.getName());
     }
 
     @Override
     public int delete(Long id) {
-        return jdbcTemplate.update("EXEC DeleteDiscount @id=?", id);
+        return jdbcTemplate.update("EXECUTE DeleteDiscount @id=?", id);
     }
 }

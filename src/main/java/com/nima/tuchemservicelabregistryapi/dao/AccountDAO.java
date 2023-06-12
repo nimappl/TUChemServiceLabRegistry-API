@@ -1,14 +1,20 @@
 package com.nima.tuchemservicelabregistryapi.dao;
 
 import com.nima.tuchemservicelabregistryapi.model.Account;
+import com.nima.tuchemservicelabregistryapi.model.CustomerCandidate;
 import com.nima.tuchemservicelabregistryapi.model.Data;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class AccountDAO implements DAO<Account>{
     private final JdbcTemplate jdbcTemplate;
+    private final PersonGeneralDAO personDAO;
+    private final OrganizationDAO organizationDAO;
 
     private final RowMapper<Account> rowMapper = (rs, rowNum) -> {
         Account account = new Account();
@@ -20,8 +26,24 @@ public class AccountDAO implements DAO<Account>{
         return account;
     };
 
-    public AccountDAO(JdbcTemplate jdbcTemplate) {
+    private final RowMapper<CustomerCandidate> candidateRowMapper = (rs, rowNum) -> {
+        CustomerCandidate candidate = new CustomerCandidate();
+        candidate.setID(rs.getLong("ID"));
+        candidate.setType((Integer) rs.getObject("Type"));
+        candidate.setName(rs.getString("Name"));
+        candidate.setTypeStdn(rs.getBoolean("PTypeStdn"));
+        candidate.setTypeProf(rs.getBoolean("PTypeProf"));
+        candidate.setTypeOrg(rs.getBoolean("PTypeOrg"));
+        candidate.setStdnEduGroup(rs.getString("StdnEduGroup"));
+        candidate.setProfEduGroup(rs.getString("ProfEduGroup"));
+        candidate.setHasContract(rs.getBoolean("HasContract"));
+        return candidate;
+    };
+
+    public AccountDAO(JdbcTemplate jdbcTemplate, PersonGeneralDAO personDAO, OrganizationDAO organizationDAO) {
         this.jdbcTemplate = jdbcTemplate;
+        this.personDAO = personDAO;
+        this.organizationDAO = organizationDAO;
     }
 
     @Override
@@ -29,14 +51,64 @@ public class AccountDAO implements DAO<Account>{
         return null;
     }
 
+    public Account exists(Long customerId, Short customerType) {
+        Account service;
+        String sql = "SELECT * FROM Account WHERE " +
+                     "(PersonCustomerID=" + customerId +
+                    " OR OrganizationCustomerID=" + customerId + ") " +
+                     "AND AccountType=" + customerType;
+        try {
+            service = jdbcTemplate.queryForObject(sql, rowMapper);
+        } catch (DataAccessException ex) {
+            return null;
+        }
+        return service;
+    }
+
     @Override
     public Account getById(Long id) {
-        return null;
+        String sql = "SELECT * FROM Account WHERE AccountID=" + id;
+        Account account;
+        try {
+            account = jdbcTemplate.queryForObject(sql, rowMapper);
+        } catch (DataAccessException ex) {
+            return null;
+        }
+        if (account.getType() == 1) account.setCustPerson(personDAO.getById(account.getPersonCustomerId()));
+        else account.setCustOrganization(organizationDAO.getById(account.getOrganizationCustomerId()));
+        return account;
+    }
+
+    public List<CustomerCandidate> getCustomerCandidates(String filter) {
+        String sql = "SELECT * FROM vCustomerCandidates " +
+                     "WHERE Name LIKE " + "'%" + filter + "%' " +
+                     "ORDER BY Name";
+        return jdbcTemplate.query(sql, candidateRowMapper);
+    }
+
+    public int update(long id, long amount) {
+        long currentAmount = jdbcTemplate.queryForObject("SELECT AccountBalance FROM Account WHERE AccountID=" + id, Long.class);
+        currentAmount += amount;
+        return jdbcTemplate.update("UPDATE Account SET AccountBalance=? WHERE AccountID=?", currentAmount, id);
     }
 
     @Override
     public int create(Account account) {
-        return 0;
+        if (account.getType() == 1) {
+            account.setPersonCustomerId((long) personDAO.create(account.getCustPerson()));
+            account.setOrganizationCustomerId(null);
+        }
+
+        if (account.getType() == 2 && account.getCustOrganization().getId() == null) {
+            account.setOrganizationCustomerId((long) organizationDAO.create(account.getCustOrganization()));
+            account.setPersonCustomerId(null);
+        }
+
+        if (account.getBalance() == null) account.setBalance((long) 0);
+
+        return jdbcTemplate.queryForObject("EXECUTE CreateAccount ?, ?, ?, ?",
+               new Object[]{account.getType(), account.getBalance(), account.getPersonCustomerId(), account.getOrganizationCustomerId()},
+               Integer.class);
     }
 
     @Override

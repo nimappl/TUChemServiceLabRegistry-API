@@ -9,10 +9,11 @@ public class CustomerCandidate {
     private Boolean typeOrg;
     private String stdnEduGroup;
     private String profEduGroup;
+    private Boolean hasContract;
 
     public CustomerCandidate() {}
 
-    public CustomerCandidate(Integer type, Long ID, String name, Boolean typeStdn, Boolean typeProf, Boolean typeOrg, String stdnEduGroup, String profEduGroup) {
+    public CustomerCandidate(Integer type, Long ID, String name, Boolean typeStdn, Boolean typeProf, Boolean typeOrg, String stdnEduGroup, String profEduGroup, Boolean hasContract) {
         this.type = type;
         this.ID = ID;
         this.name = name;
@@ -21,6 +22,7 @@ public class CustomerCandidate {
         this.typeOrg = typeOrg;
         this.stdnEduGroup = stdnEduGroup;
         this.profEduGroup = profEduGroup;
+        this.hasContract = hasContract;
     }
 
     public Integer getType() {
@@ -85,5 +87,13 @@ public class CustomerCandidate {
 
     public void setProfEduGroup(String profEduGroup) {
         this.profEduGroup = profEduGroup;
+    }
+
+    public Boolean getHasContract() {
+        return hasContract;
+    }
+
+    public void setHasContract(Boolean hasContract) {
+        this.hasContract = hasContract;
     }
 }

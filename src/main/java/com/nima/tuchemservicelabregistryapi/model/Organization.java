@@ -6,17 +6,19 @@ public class Organization {
     private String name;
     private String nationalId;
     private String registrationNo;
+    private Boolean hasContract;
     private String contractNo;
     private List<OrgPhoneNumber> phoneNumbers;
     private List<OrgRepresentative> representatives;
 
     public Organization() {}
 
-    public Organization(Long id, String name, String nationalId, String registrationNo, String contractNo, List<OrgPhoneNumber> phoneNumbers, List<OrgRepresentative> representatives) {
+    public Organization(Long id, String name, String nationalId, String registrationNo, Boolean hasContract, String contractNo, List<OrgPhoneNumber> phoneNumbers, List<OrgRepresentative> representatives) {
         this.id = id;
         this.name = name;
         this.nationalId = nationalId;
         this.registrationNo = registrationNo;
+        this.hasContract = hasContract;
         this.contractNo = contractNo;
         this.phoneNumbers = phoneNumbers;
         this.representatives = representatives;
@@ -52,6 +54,14 @@ public class Organization {
 
     public void setRegistrationNo(String registrationNo) {
         this.registrationNo = registrationNo;
+    }
+
+    public Boolean getHasContract() {
+        return hasContract;
+    }
+
+    public void setHasContract(Boolean hasContract) {
+        this.hasContract = hasContract;
     }
 
     public String getContractNo() {

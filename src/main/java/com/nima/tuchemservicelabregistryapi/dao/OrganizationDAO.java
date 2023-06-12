@@ -23,6 +23,7 @@ public class OrganizationDAO implements DAO<Organization> {
         organization.setName(rs.getString("OrgName"));
         organization.setNationalId(rs.getString("OrgNationalID"));
         organization.setRegistrationNo(rs.getString("OrgRegistrationNo"));
+        organization.setHasContract(rs.getBoolean("HasContract"));
         organization.setContractNo(rs.getString("OrgContractNo"));
         return organization;
     };
@@ -79,8 +80,8 @@ public class OrganizationDAO implements DAO<Organization> {
     @Override
     public int create(Organization org) {
         long id;
-        String createQuery = "EXEC CreateOrganization @name=?, @nationalId=?, @regNumber=?, @contractNo=?";
-        id = jdbcTemplate.queryForObject(createQuery, new Object[]{org.getName(), org.getNationalId(), org.getRegistrationNo(), org.getContractNo()}, Long.class);
+        String createQuery = "EXEC CreateOrganization @name=?, @nationalId=?, @regNumber=?, @hasContract=?, @contractNo=?";
+        id = jdbcTemplate.queryForObject(createQuery, new Object[]{org.getName(), org.getNationalId(), org.getRegistrationNo(), org.getHasContract(), org.getContractNo()}, Long.class);
 
         if (org.getPhoneNumbers() != null) {
             org.getPhoneNumbers().forEach(phoneNumber -> {
@@ -137,8 +138,8 @@ public class OrganizationDAO implements DAO<Organization> {
             }
         });
 
-        jdbcTemplate.update("UPDATE Organization SET OrgName=?, OrgNationalID=?, OrgRegistrationNo=?, OrgContractNo=? WHERE OrganizationID=?",
-                org.getName(), org.getNationalId(), org.getRegistrationNo(), org.getContractNo(), org.getId());
+        jdbcTemplate.update("UPDATE Organization SET OrgName=?, OrgNationalID=?, OrgRegistrationNo=?, HasContract=?, OrgContractNo=? WHERE OrganizationID=?",
+                org.getName(), org.getNationalId(), org.getRegistrationNo(), org.getHasContract(), org.getContractNo(), org.getId());
         return 1;
     }
 

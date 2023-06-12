@@ -56,6 +56,17 @@ public class PersonController {
         return new ResponseEntity<>(person, HttpStatus.OK);
     }
 
+    @GetMapping("/general/{id}")
+    public ResponseEntity<PersonGeneral> getGeneralById(@PathVariable("id") Long id) {
+        PersonGeneral person;
+        try {
+            person = this.generalDAO.getById(id);
+        } catch (NoSuchElementException ex) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(person, HttpStatus.OK);
+    }
+
     @PostMapping("/new")
     public ResponseEntity createPerson(@RequestBody PersonGeneral person) {
         int newId;

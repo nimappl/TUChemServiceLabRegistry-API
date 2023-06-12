@@ -11,11 +11,6 @@ import java.util.List;
 @Component
 public class ServiceDAO implements DAO<Service> {
     private final JdbcTemplate jdbcTemplate;
-    private final TestDAO testDAO;
-    private final DiscountDAO discountDAO;
-    private final LabPersonnelDAO labPersonnelDAO;
-    private final TestFeeDAO testFeeDAO;
-    private final TestPrepDAO testPrepDAO;
 
     private final RowMapper<Service> srvRowMapper = (rs, rowNum) -> {
         Service service = new Service();
@@ -44,33 +39,8 @@ public class ServiceDAO implements DAO<Service> {
         return service;
     };
 
-    private final RowMapper<CustomerCandidate> candidateRowMapper = (rs, rowNum) -> {
-        CustomerCandidate candidate = new CustomerCandidate();
-        candidate.setID(rs.getLong("ID"));
-        candidate.setType((Integer) rs.getObject("Type"));
-        candidate.setName(rs.getString("Name"));
-        candidate.setTypeStdn(rs.getBoolean("PTypeStdn"));
-        candidate.setTypeProf(rs.getBoolean("PTypeProf"));
-        candidate.setTypeOrg(rs.getBoolean("PTypeOrg"));
-        candidate.setStdnEduGroup(rs.getString("StdnEduGroup"));
-        candidate.setProfEduGroup(rs.getString("ProfEduGroup"));
-        return candidate;
-    };
-
-    private final RowMapper<ServiceResultFile> rsFileRowMapper = (rs, rowNum) -> {
-        ServiceResultFile resultFile = new ServiceResultFile();
-        resultFile.setFileName(rs.getString("FileName"));
-        resultFile.setFilePath(rs.getString("FilePath"));
-        return resultFile;
-    };
-
-    public ServiceDAO(JdbcTemplate jdbcTemplate, TestDAO testDAO, DiscountDAO discountDAO, LabPersonnelDAO labPersonnelDAO, TestFeeDAO testFeeDAO, TestPrepDAO testPrepDAO) {
+    public ServiceDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.testDAO = testDAO;
-        this.discountDAO = discountDAO;
-        this.labPersonnelDAO = labPersonnelDAO;
-        this.testFeeDAO = testFeeDAO;
-        this.testPrepDAO = testPrepDAO;
     }
 
     @Override
@@ -94,35 +64,30 @@ public class ServiceDAO implements DAO<Service> {
             System.out.println(ex.getMessage());
         }
 
-        service.setServingPersonnel(labPersonnelDAO.getById(service.getServingPersonnelId()));
-        service.setTest(testDAO.getById(service.getTestId()));
-        service.setTestFee(testFeeDAO.getById(service.getTestFeeId()));
-        service.setTestPreps(testPrepDAO.getByServiceId(service.getId()));
-        String serviceRSFileSql = "SELECT * FROM ServiceResultFile WHERE ServiceID=" + service.getId();
-        service.setResultFiles(jdbcTemplate.query(serviceRSFileSql , rsFileRowMapper));
-
         return service;
     }
 
-    public List<CustomerCandidate> getCustomerCandidates(String filter) {
-        String sql = "SELECT * FROM vCustomerCandidates " +
-                     "WHERE Name LIKE" + "'%" + filter + "%'" +
-                     "ORDER BY Name";
-        return jdbcTemplate.query(sql, candidateRowMapper);
-    }
-
     @Override
-    public int create(Service service) {
-        return 0;
+    public int create(Service s) {
+        int id;
+        id = jdbcTemplate.queryForObject("EXECUTE CreateService ?, ?, ?, ?, ?, ?, ?, ?, ?, ?",
+                new Object[]{s.getDate(), s.getSampleQuantity(), s.getTestTime(), s.getTotalPrice(), s.getAdditionalCosts(),
+                s.getTestId(), s.getTestFeeId(), s.getServingPersonnelId(), s.getCustomerAccountId(), s.getConsiderations()},
+                Integer.class);
+        return id;
     }
 
     @Override
     public int update(Service service) {
-        return 0;
+        String sql = "UPDATE Service SET SDate=?, SSampleQuantity=?, STestTime=?, STotalPrice=?, SAdditionalCosts=?," +
+                " TestID=?, TestFeeID=?, ServingPersonnelID=?, SConsiderations=? WHERE ServiceID=?";
+        return jdbcTemplate.update(sql, service.getDate(), service.getSampleQuantity(), service.getTestTime(),
+                service.getTotalPrice(), service.getAdditionalCosts(), service.getTestId(), service.getTestFeeId(),
+                service.getServingPersonnelId(), service.getConsiderations(), service.getId());
     }
 
     @Override
     public int delete(Long id) {
-        return 0;
+        return jdbcTemplate.update("DELETE FROM Service WHERE ServiceID=" + id);
     }
 }

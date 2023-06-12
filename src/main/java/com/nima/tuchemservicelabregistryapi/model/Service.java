@@ -17,8 +17,6 @@ public class Service {
     private List<TestPrep> testPreps;
     private Long servingPersonnelId;
     private LabPersonnel servingPersonnel;
-    private Person personCustomer;
-    private Organization orgCustomer;
     private Long customerAccountId;
     private Account customerAccount;
     private List<ServiceResultFile> resultFiles;
@@ -27,7 +25,7 @@ public class Service {
 
     public Service() {}
 
-    public Service(Long id, Timestamp date, Integer sampleQuantity, Integer testTime, Long additionalCosts, Long totalPrice, Long testId, Test test, Long testFeeId, TestFee testFee, List<TestPrep> testPreps, Long servingPersonnelId, LabPersonnel servingPersonnel, Person personCustomer, Organization orgCustomer, Long customerAccountId, Account customerAccount, List<ServiceResultFile> resultFiles, List<Discount> discounts, String considerations) {
+    public Service(Long id, Timestamp date, Integer sampleQuantity, Integer testTime, Long additionalCosts, Long totalPrice, Long testId, Test test, Long testFeeId, TestFee testFee, List<TestPrep> testPreps, Long servingPersonnelId, LabPersonnel servingPersonnel, Long customerAccountId, Account customerAccount, List<ServiceResultFile> resultFiles, List<Discount> discounts, String considerations) {
         this.id = id;
         this.date = date;
         this.sampleQuantity = sampleQuantity;
@@ -41,8 +39,6 @@ public class Service {
         this.testPreps = testPreps;
         this.servingPersonnelId = servingPersonnelId;
         this.servingPersonnel = servingPersonnel;
-        this.personCustomer = personCustomer;
-        this.orgCustomer = orgCustomer;
         this.customerAccountId = customerAccountId;
         this.customerAccount = customerAccount;
         this.resultFiles = resultFiles;
@@ -152,22 +148,6 @@ public class Service {
 
     public void setServingPersonnel(LabPersonnel servingPersonnel) {
         this.servingPersonnel = servingPersonnel;
-    }
-
-    public Person getPersonCustomer() {
-        return personCustomer;
-    }
-
-    public void setPersonCustomer(Person personCustomer) {
-        this.personCustomer = personCustomer;
-    }
-
-    public Organization getOrgCustomer() {
-        return orgCustomer;
-    }
-
-    public void setOrgCustomer(Organization orgCustomer) {
-        this.orgCustomer = orgCustomer;
     }
 
     public Long getCustomerAccountId() {

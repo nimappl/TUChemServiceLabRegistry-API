@@ -7,7 +7,7 @@ public class Account {
     private Short type;
     private Long balance;
     private Long personCustomerId;
-    private Person custPerson;
+    private PersonGeneral custPerson;
     private Long organizationCustomerId;
     private Organization custOrganization;
     private List<Payment> payments;
@@ -15,7 +15,7 @@ public class Account {
 
     public Account() {}
 
-    public Account(Long id, Short type, Long balance, Long personCustomerId, Person custPerson, Long organizationCustomerId, Organization custOrganization, List<Payment> payments, List<Service> services) {
+    public Account(Long id, Short type, Long balance, Long personCustomerId, PersonGeneral custPerson, Long organizationCustomerId, Organization custOrganization, List<Payment> payments, List<Service> services) {
         this.id = id;
         this.type = type;
         this.balance = balance;
@@ -59,11 +59,11 @@ public class Account {
         this.personCustomerId = personCustomerId;
     }
 
-    public Person getCustPerson() {
+    public PersonGeneral getCustPerson() {
         return custPerson;
     }
 
-    public void setCustPerson(Person custPerson) {
+    public void setCustPerson(PersonGeneral custPerson) {
         this.custPerson = custPerson;
     }
 

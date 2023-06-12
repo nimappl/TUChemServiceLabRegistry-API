@@ -55,6 +55,15 @@ public class TestPrepDAO implements DAO<TestPrep> {
         return testPrep;
     }
 
+    public int addForService(long prepId, long serviceId) {
+        return jdbcTemplate.update("INSERT INTO Service_TestPrep (ServiceID, TestPrepID) VALUES (?, ?)",
+                serviceId, prepId);
+    }
+
+    public int removeForService(long serviceId) {
+        return jdbcTemplate.update("DELETE FROM Service_TestPrep WHERE ServiceID=" + serviceId);
+    }
+
     @Override
     public int create(TestPrep testPrep) {
         return jdbcTemplate.update("INSERT INTO TestPrep (TestID, TPrepType, TPrepPrice) VALUES (?,?,?)",

@@ -3,6 +3,7 @@ package com.nima.tuchemservicelabregistryapi.dao;
 import com.nima.tuchemservicelabregistryapi.model.Data;
 import com.nima.tuchemservicelabregistryapi.model.Organization;
 import com.nima.tuchemservicelabregistryapi.model.PersonGeneral;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -70,13 +71,16 @@ public class PersonGeneralDAO implements DAO<PersonGeneral> {
 
     @Override
     public PersonGeneral getById(Long id) {
-        String sql = "SELECT * FROM vPersonGeneral WHERE PersonID=" + id;
-        PersonGeneral person = jdbcTemplate.queryForObject(sql, rowMapper);
-        if (person != null) {
-            person.setProfEduGroup(eduGroupDAO.getById(person.getProfEduGroupId()));
-            person.setStdnEduField(eduFieldDAO.getById(person.getStdnEduFieldId()));
-            person.setOrgRepOrganizations(organizationDAO.getOrganizationsOfRepresentative(person.getId()));
+        String sql = "SELECT * FROM vPersonGeneralAll WHERE PersonID=" + id;
+        PersonGeneral person;
+        try {
+            person = jdbcTemplate.queryForObject(sql, rowMapper);
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
         }
+        person.setProfEduGroup(eduGroupDAO.getById(person.getProfEduGroupId()));
+        person.setStdnEduField(eduFieldDAO.getById(person.getStdnEduFieldId()));
+        person.setOrgRepOrganizations(organizationDAO.getOrganizationsOfRepresentative(person.getId()));
         return person;
     }
 
@@ -95,7 +99,7 @@ public class PersonGeneralDAO implements DAO<PersonGeneral> {
         if (person.getTypeOrg()) {
             orgRepDAO.create(person.asOrgRepresentative());
         }
-        return 1;
+        return (int)(long) person.getId();
     }
 
     @Override
