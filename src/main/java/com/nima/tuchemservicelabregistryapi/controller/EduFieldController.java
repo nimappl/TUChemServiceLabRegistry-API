@@ -46,20 +46,21 @@ public class EduFieldController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity createEduField(@RequestBody EduField eduField) {
-        if (dao.create(eduField) == 1) return new ResponseEntity(HttpStatus.CREATED);
-        return new ResponseEntity((HttpStatus.NOT_MODIFIED));
+    public ResponseEntity<Integer> createEduField(@RequestBody EduField eduField) {
+        int id = dao.create(eduField);
+        if (id > 0) return new ResponseEntity<>(id, HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/update")
     public ResponseEntity updateEduField(@RequestBody EduField eduField) {
         if (dao.update(eduField) == 1)  return new ResponseEntity(HttpStatus.OK);
-        return new ResponseEntity((HttpStatus.NOT_MODIFIED));
+        return new ResponseEntity(HttpStatus.NOT_MODIFIED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteEduField(@PathVariable("id") Long id) {
         if (dao.delete(id) == 1) return new ResponseEntity(HttpStatus.OK);
-        return new ResponseEntity((HttpStatus.NOT_MODIFIED));
+        return new ResponseEntity(HttpStatus.NOT_MODIFIED);
     }
 }

@@ -24,16 +24,11 @@ public class AccountService {
     }
 
     public Account exists(Long customerId, Short customerType) {
-        Account account = accountDAO.exists(customerId, customerType);
-        if (account != null) {
-            if (account.getType() == 1) account.setCustPerson(personDAO.getById(account.getPersonCustomerId()));
-            else account.setCustOrganization(organizationDAO.getById(account.getOrganizationCustomerId()));
-        }
-        return account;
+        return accountDAO.exists(customerId, customerType);
     }
 
     public Account getById(Long id) {
-        return null;
+        return accountDAO.getById(id);
     }
 
     public int updateBalance(long id, long amount) {

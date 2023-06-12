@@ -6,6 +6,7 @@ public class Payment {
     private Long id;
     private Timestamp date;
     private Long amount;
+    private Short type;
     private Long accountId;
     private String labsnetCreditTitle;
     private String labsnetTransactionCode;
@@ -15,10 +16,11 @@ public class Payment {
 
     public Payment() {}
 
-    public Payment(Long id, Timestamp date, Long amount, Long accountId, String labsnetCreditTitle, String labsnetTransactionCode, Short cashBasisType, String cashBasisTrackingNo, Long grantProfessorId) {
+    public Payment(Long id, Timestamp date, Long amount, Short type, Long accountId, String labsnetCreditTitle, String labsnetTransactionCode, Short cashBasisType, String cashBasisTrackingNo, Long grantProfessorId) {
         this.id = id;
         this.date = date;
         this.amount = amount;
+        this.type = type;
         this.accountId = accountId;
         this.labsnetCreditTitle = labsnetCreditTitle;
         this.labsnetTransactionCode = labsnetTransactionCode;
@@ -49,6 +51,14 @@ public class Payment {
 
     public void setAmount(Long amount) {
         this.amount = amount;
+    }
+
+    public Short getType() {
+        return type;
+    }
+
+    public void setType(Short type) {
+        this.type = type;
     }
 
     public Long getAccountId() {

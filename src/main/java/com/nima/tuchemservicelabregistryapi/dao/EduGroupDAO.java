@@ -42,7 +42,7 @@ public class EduGroupDAO implements DAO<EduGroup> {
 
     @Override
     public int create(EduGroup eduGroup) {
-        return jdbcTemplate.update("INSERT INTO EduGroup(EduGroupName) VALUES(?)", eduGroup.getName());
+        return jdbcTemplate.queryForObject("EXECUTE CreateEduGroup ?", new Object[]{eduGroup.getName()}, Integer.class);
     }
 
     @Override

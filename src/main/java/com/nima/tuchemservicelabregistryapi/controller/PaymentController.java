@@ -53,8 +53,7 @@ public class PaymentController {
 
     @PutMapping("/update")
     public ResponseEntity updatePayment(@RequestBody Payment payment) {
-        if (dao.update(payment) == 1)  return new ResponseEntity(HttpStatus.OK);
-        return new ResponseEntity(HttpStatus.NOT_MODIFIED);
+        return new ResponseEntity(HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @DeleteMapping("/{id}")

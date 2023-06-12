@@ -52,17 +52,19 @@ public class AccountDAO implements DAO<Account>{
     }
 
     public Account exists(Long customerId, Short customerType) {
-        Account service;
+        Account account;
         String sql = "SELECT * FROM Account WHERE " +
                      "(PersonCustomerID=" + customerId +
                     " OR OrganizationCustomerID=" + customerId + ") " +
                      "AND AccountType=" + customerType;
         try {
-            service = jdbcTemplate.queryForObject(sql, rowMapper);
+            account = jdbcTemplate.queryForObject(sql, rowMapper);
+            if (account.getType() == 1) account.setCustPerson(personDAO.getById(account.getPersonCustomerId()));
+            else account.setCustOrganization(organizationDAO.getById(account.getOrganizationCustomerId()));
         } catch (DataAccessException ex) {
             return null;
         }
-        return service;
+        return account;
     }
 
     @Override
@@ -71,11 +73,11 @@ public class AccountDAO implements DAO<Account>{
         Account account;
         try {
             account = jdbcTemplate.queryForObject(sql, rowMapper);
+            if (account.getType() == 1) account.setCustPerson(personDAO.getById(account.getPersonCustomerId()));
+            else account.setCustOrganization(organizationDAO.getById(account.getOrganizationCustomerId()));
         } catch (DataAccessException ex) {
             return null;
         }
-        if (account.getType() == 1) account.setCustPerson(personDAO.getById(account.getPersonCustomerId()));
-        else account.setCustOrganization(organizationDAO.getById(account.getOrganizationCustomerId()));
         return account;
     }
 

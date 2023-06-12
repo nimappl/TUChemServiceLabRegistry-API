@@ -52,13 +52,13 @@ public class DiscountDAO implements DAO<Discount> {
         });
     }
 
-    public int addForService(long discountId, long serviceId) {
-        return jdbcTemplate.update("INSERT INTO Service_Discount (ServiceID, DiscountID) VALUES (?, ?)",
+    public void addForService(long discountId, long serviceId) {
+        jdbcTemplate.update("INSERT INTO Service_Discount (ServiceID, DiscountID) VALUES (?, ?)",
                 serviceId, discountId);
     }
 
-    public int removeForService(long serviceId) {
-        return jdbcTemplate.update("DELETE FROM Service_Discount WHERE ServiceID=" + serviceId);
+    public void removeForService(long serviceId) {
+        jdbcTemplate.update("DELETE FROM Service_Discount WHERE ServiceID=" + serviceId);
     }
 
     @Override

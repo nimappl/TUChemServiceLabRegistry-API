@@ -51,8 +51,8 @@ public class EduFieldDAO implements DAO<EduField> {
 
     @Override
     public int create(EduField eduField) {
-        return jdbcTemplate.update("INSERT INTO EduField(EduFieldName, EduGroupID) VALUES(?, ?)",
-                eduField.getName(), eduField.getEduGroupId());
+        return jdbcTemplate.queryForObject("EXECUTE CreateEduField ?, ?",
+                new Object[]{eduField.getName(), eduField.getEduGroupId()}, Integer.class);
     }
 
     @Override
