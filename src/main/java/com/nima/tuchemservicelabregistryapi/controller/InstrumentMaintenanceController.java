@@ -47,7 +47,7 @@ public class InstrumentMaintenanceController {
 
     @PostMapping("/new")
     public ResponseEntity createInstrumentMaintenance(@RequestBody InstrumentMaintenance maintenance) {
-        if (dao.create(maintenance) == 1) return new ResponseEntity(HttpStatus.CREATED);
+        if (dao.create(maintenance) > 0) return new ResponseEntity(HttpStatus.CREATED);
         return new ResponseEntity((HttpStatus.NOT_MODIFIED));
     }
 

@@ -23,6 +23,6 @@ public class OrgRepresentative extends Person {
     public String toString() {
         return "OrgRepresentative{" +
                 "organizations=" + organizations +
-                '}';
+                "} " + super.toString();
     }
 }

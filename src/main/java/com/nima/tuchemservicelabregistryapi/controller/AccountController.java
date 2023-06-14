@@ -2,6 +2,7 @@ package com.nima.tuchemservicelabregistryapi.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nima.tuchemservicelabregistryapi.model.VAccount;
 import com.nima.tuchemservicelabregistryapi.service.AccountService;
 import com.nima.tuchemservicelabregistryapi.model.Data;
 import com.nima.tuchemservicelabregistryapi.model.Account;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -31,6 +33,12 @@ public class AccountController {
         }
 
         res = service.list(res);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-options/{filter}")
+    public ResponseEntity<List<VAccount>> getAllOptions(@PathVariable("filter") String filter) {
+        List<VAccount> res = service.getAllOptions(filter);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 

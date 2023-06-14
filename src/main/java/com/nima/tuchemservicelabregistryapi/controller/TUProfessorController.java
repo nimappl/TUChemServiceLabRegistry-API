@@ -50,12 +50,7 @@ public class TUProfessorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TUProfessor> getById(@PathVariable("id") Long id) {
-        TUProfessor person;
-        try {
-            person = this.dao.getById(id);
-        } catch (NoSuchElementException ex) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        TUProfessor person = dao.getById(id);
         return new ResponseEntity<>(person, HttpStatus.OK);
     }
 

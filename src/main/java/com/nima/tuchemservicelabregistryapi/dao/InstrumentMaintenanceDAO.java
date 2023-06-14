@@ -73,10 +73,10 @@ public class InstrumentMaintenanceDAO implements DAO<InstrumentMaintenance> {
     @Override
     public int create(InstrumentMaintenance maintenance) {
         long newId;
-        System.out.println(maintenance.toString());
         if (maintenance.getServiceman() != null) {
             if (maintenance.getServicemanId() == null || !maintenance.getServiceman().getTypeOrg()) {
-                maintenance.setServicemanId((long) orgRepresentativeDAO.create(maintenance.getServiceman()));
+                maintenance.getServiceman().setTypeOrg(true);
+                maintenance.setServicemanId((long) personDAO.create(maintenance.getServiceman()));
             }
         }
         if (maintenance.getServicingCompany() != null) {
@@ -108,7 +108,8 @@ public class InstrumentMaintenanceDAO implements DAO<InstrumentMaintenance> {
         InstrumentMaintenance maintenanceInDB = getById(maintenance.getId());
         if (maintenance.getServiceman() != null) {
             if (maintenance.getServicemanId() == null || !maintenance.getServiceman().getTypeOrg()) {
-                maintenance.setServicemanId((long) orgRepresentativeDAO.create(maintenance.getServiceman()));
+                maintenance.getServiceman().setTypeOrg(true);
+                maintenance.setServicemanId((long) personDAO.create(maintenance.getServiceman()));
             }
         }
         if (maintenance.getServicingCompany() != null) {

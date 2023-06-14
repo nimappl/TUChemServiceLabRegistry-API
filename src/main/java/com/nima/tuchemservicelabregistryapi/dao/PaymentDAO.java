@@ -2,6 +2,7 @@ package com.nima.tuchemservicelabregistryapi.dao;
 
 import com.nima.tuchemservicelabregistryapi.model.Data;
 import com.nima.tuchemservicelabregistryapi.model.Payment;
+import com.nima.tuchemservicelabregistryapi.model.TPayment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -11,6 +12,17 @@ import org.springframework.stereotype.Component;
 public class PaymentDAO implements DAO<Payment> {
     private final JdbcTemplate jdbcTemplate;
     private final AccountDAO accountDAO;
+    private final TUProfessorDAO professorDAO;
+
+    private final RowMapper<TPayment> tRowMapper = (rs, roNum) -> {
+        TPayment payment = new TPayment();
+        payment.setId(rs.getLong("PaymentID"));
+        payment.setType((Short) rs.getObject("PmntType"));
+        payment.setDate(rs.getDate("PmntDate"));
+        payment.setAmount((Long) rs.getObject("PmntAmount"));
+        payment.setCustomerName(rs.getString("CustomerName"));
+        return payment;
+    };
 
     private final RowMapper<Payment> rowMapper = (rs, rowNum) -> {
         Payment payment = new Payment();
@@ -27,16 +39,21 @@ public class PaymentDAO implements DAO<Payment> {
         return payment;
     };
 
-    public PaymentDAO(JdbcTemplate jdbcTemplate, AccountDAO accountDAO) {
+    public PaymentDAO(JdbcTemplate jdbcTemplate, AccountDAO accountDAO, TUProfessorDAO professorDAO) {
         this.jdbcTemplate = jdbcTemplate;
         this.accountDAO = accountDAO;
+        this.professorDAO = professorDAO;
     }
 
     @Override
     public Data<Payment> list(Data<Payment> template) {
-        template.count = jdbcTemplate.queryForObject(template.countQuery("vPayment2", "PaymentID"), Integer.class);
-        template.records = jdbcTemplate.query(template.selectQuery("vPayment2", "PaymentID"), rowMapper);
-        return template;
+        return null;
+    }
+
+    public Data<TPayment> getAll(Data<TPayment> options) {
+        options.count = jdbcTemplate.queryForObject(options.countQuery("vPayment2", "PaymentID"), Integer.class);
+        options.records = jdbcTemplate.query(options.selectQuery("vPayment2", "PaymentID"), tRowMapper);
+        return options;
     }
 
     @Override
@@ -45,6 +62,8 @@ public class PaymentDAO implements DAO<Payment> {
         Payment payment;
         try {
             payment = jdbcTemplate.queryForObject(sql, rowMapper);
+            if (payment.getType() == 1) payment.setGrantProfessor(professorDAO.getById(payment.getGrantProfessorId()));
+            payment.setAccount(accountDAO.getById(payment.getAccountId()));
         } catch (DataAccessException ex) {
             return null;
         }

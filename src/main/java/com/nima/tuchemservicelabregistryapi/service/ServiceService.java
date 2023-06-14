@@ -94,6 +94,8 @@ public class ServiceService {
     public int delete(Long id) {
         discountDAO.removeForService(id);
         testPrepDAO.removeForService(id);
+        Service item = serviceDAO.getById(id);
+        accountDAO.update(item.getCustomerAccountId(), item.getTotalPrice() * -1);
         return serviceDAO.delete(id);
     }
 }

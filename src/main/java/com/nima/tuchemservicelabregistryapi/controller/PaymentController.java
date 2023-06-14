@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nima.tuchemservicelabregistryapi.dao.PaymentDAO;
 import com.nima.tuchemservicelabregistryapi.model.Data;
 import com.nima.tuchemservicelabregistryapi.model.Payment;
+import com.nima.tuchemservicelabregistryapi.model.TPayment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,16 +22,16 @@ public class PaymentController {
     }
 
     @GetMapping()
-    public ResponseEntity<Data<Payment>> getAll(@RequestParam("queryParams") String queryParams) {
+    public ResponseEntity<Data<TPayment>> getAll(@RequestParam("queryParams") String queryParams) {
         ObjectMapper objectMapper = new ObjectMapper();
-        Data<Payment> res;
+        Data<TPayment> res;
         try {
             res = objectMapper.readValue(queryParams, Data.class);
         } catch(JsonProcessingException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        res = dao.list(res);
+        res = dao.getAll(res);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 

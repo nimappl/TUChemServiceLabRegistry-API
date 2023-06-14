@@ -13,10 +13,12 @@ public class Payment {
     private Short cashBasisType;
     private String cashBasisTrackingNo;
     private Long grantProfessorId;
+    private TUProfessor grantProfessor;
+    private Account account;
 
     public Payment() {}
 
-    public Payment(Long id, Timestamp date, Long amount, Short type, Long accountId, String labsnetCreditTitle, String labsnetTransactionCode, Short cashBasisType, String cashBasisTrackingNo, Long grantProfessorId) {
+    public Payment(Long id, Timestamp date, Long amount, Short type, Long accountId, String labsnetCreditTitle, String labsnetTransactionCode, Short cashBasisType, String cashBasisTrackingNo, Long grantProfessorId, TUProfessor grantProfessor, Account account) {
         this.id = id;
         this.date = date;
         this.amount = amount;
@@ -27,6 +29,8 @@ public class Payment {
         this.cashBasisType = cashBasisType;
         this.cashBasisTrackingNo = cashBasisTrackingNo;
         this.grantProfessorId = grantProfessorId;
+        this.grantProfessor = grantProfessor;
+        this.account = account;
     }
 
     public Long getId() {
@@ -107,5 +111,21 @@ public class Payment {
 
     public void setGrantProfessorId(Long grantProfessorId) {
         this.grantProfessorId = grantProfessorId;
+    }
+
+    public TUProfessor getGrantProfessor() {
+        return grantProfessor;
+    }
+
+    public void setGrantProfessor(TUProfessor grantProfessor) {
+        this.grantProfessor = grantProfessor;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

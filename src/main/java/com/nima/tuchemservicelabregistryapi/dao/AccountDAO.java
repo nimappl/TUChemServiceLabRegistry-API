@@ -3,6 +3,7 @@ package com.nima.tuchemservicelabregistryapi.dao;
 import com.nima.tuchemservicelabregistryapi.model.Account;
 import com.nima.tuchemservicelabregistryapi.model.CustomerCandidate;
 import com.nima.tuchemservicelabregistryapi.model.Data;
+import com.nima.tuchemservicelabregistryapi.model.VAccount;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -40,6 +41,18 @@ public class AccountDAO implements DAO<Account>{
         return candidate;
     };
 
+    private final RowMapper<VAccount> accOptRowMapper = (rs, rowNum) -> {
+        VAccount account = new VAccount();
+        account.setId(rs.getLong("AccountID"));
+        account.setType((Short) rs.getObject("AccountType"));
+        account.setBalance((Long) rs.getObject("AccountBalance"));
+        account.setCustomerName(rs.getString("CustomerName"));
+        account.setNationalNumber(rs.getString("PNationalNumber"));
+        account.setPersonCustomerId((Long) rs.getObject("PersonCustomerID"));
+        account.setOrganizationCustomerId((Long) rs.getObject("OrganizationCustomerID"));
+        return account;
+    };
+
     public AccountDAO(JdbcTemplate jdbcTemplate, PersonGeneralDAO personDAO, OrganizationDAO organizationDAO) {
         this.jdbcTemplate = jdbcTemplate;
         this.personDAO = personDAO;
@@ -49,6 +62,18 @@ public class AccountDAO implements DAO<Account>{
     @Override
     public Data<Account> list(Data<Account> template) {
         return null;
+    }
+
+    public List<VAccount> getAllOptions(String filter) {
+        String sql = "SELECT * FROM vCustomer " +
+                "WHERE CustomerName LIKE " + "'%" + filter + "%' " +
+                "ORDER BY CustomerName";
+        List<VAccount> options = jdbcTemplate.query(sql, accOptRowMapper);
+        options.forEach(opt -> {
+            if (opt.getType() == 1) opt.setCustPerson(personDAO.getById(opt.getPersonCustomerId()));
+            else opt.setCustOrganization(organizationDAO.getById(opt.getOrganizationCustomerId()));
+        });
+        return options;
     }
 
     public Account exists(Long customerId, Short customerType) {
@@ -96,14 +121,18 @@ public class AccountDAO implements DAO<Account>{
 
     @Override
     public int create(Account account) {
-        if (account.getType() == 1) {
+        if (account.getType() == 1 && account.getCustPerson().getId() == null) {
             account.setPersonCustomerId((long) personDAO.create(account.getCustPerson()));
             account.setOrganizationCustomerId(null);
+        } else {
+            account.setPersonCustomerId(account.getCustPerson().getId());
         }
 
         if (account.getType() == 2 && account.getCustOrganization().getId() == null) {
             account.setOrganizationCustomerId((long) organizationDAO.create(account.getCustOrganization()));
             account.setPersonCustomerId(null);
+        } else {
+            account.setOrganizationCustomerId(account.getCustOrganization().getId());
         }
 
         if (account.getBalance() == null) account.setBalance((long) 0);

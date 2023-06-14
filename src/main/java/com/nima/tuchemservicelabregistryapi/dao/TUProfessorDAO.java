@@ -63,14 +63,12 @@ public class TUProfessorDAO implements DAO<TUProfessor> {
     @Override
     public TUProfessor getById(Long id) {
         String sql = "SELECT * FROM vTUProfessorAll WHERE PersonID = ?";
-        TUProfessor professor = null;
+        TUProfessor professor;
         try {
             professor = jdbcTemplate.queryForObject(sql, new Object[]{id}, rowMapper);
-            if (professor.getEduGroupId() != 0) {
-                professor.setEduGroup(eduGroupDao.getById(professor.getEduGroupId()));
-            }
+            professor.setEduGroup(eduGroupDao.getById(professor.getEduGroupId()));
         } catch (DataAccessException ex) {
-            System.out.println("Item not found: " + id);
+            return null;
         }
         return professor;
     }

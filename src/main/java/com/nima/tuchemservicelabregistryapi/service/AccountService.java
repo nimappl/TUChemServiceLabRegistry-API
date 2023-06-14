@@ -5,7 +5,10 @@ import com.nima.tuchemservicelabregistryapi.dao.OrganizationDAO;
 import com.nima.tuchemservicelabregistryapi.dao.PersonGeneralDAO;
 import com.nima.tuchemservicelabregistryapi.model.Account;
 import com.nima.tuchemservicelabregistryapi.model.Data;
+import com.nima.tuchemservicelabregistryapi.model.VAccount;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class AccountService {
@@ -21,6 +24,10 @@ public class AccountService {
 
     public Data<Account> list(Data<Account> template) {
         return null;
+    }
+
+    public List<VAccount> getAllOptions(String filter) {
+        return accountDAO.getAllOptions(filter);
     }
 
     public Account exists(Long customerId, Short customerType) {
