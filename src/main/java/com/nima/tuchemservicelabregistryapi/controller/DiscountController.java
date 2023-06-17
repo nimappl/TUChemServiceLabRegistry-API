@@ -52,20 +52,21 @@ public class DiscountController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity createDiscount(@RequestBody Discount discount) {
-        if (dao.create(discount) == 1) return new ResponseEntity(HttpStatus.CREATED);
-        return new ResponseEntity((HttpStatus.NOT_MODIFIED));
+    public ResponseEntity<Integer> createDiscount(@RequestBody Discount discount) {
+        int id = dao.create(discount);
+        if (id > 0) return new ResponseEntity<>(id, HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
     @PutMapping("/update")
     public ResponseEntity updateDiscount(@RequestBody Discount discount) {
         if (dao.update(discount) == 1)  return new ResponseEntity(HttpStatus.OK);
-        return new ResponseEntity((HttpStatus.NOT_MODIFIED));
+        return new ResponseEntity(HttpStatus.NOT_MODIFIED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteDiscount(@PathVariable("id") Long id) {
         if (dao.delete(id) == 1) return new ResponseEntity(HttpStatus.OK);
-        return new ResponseEntity((HttpStatus.NOT_MODIFIED));
+        return new ResponseEntity(HttpStatus.NOT_MODIFIED);
     }
 }
