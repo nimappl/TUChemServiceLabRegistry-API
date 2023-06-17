@@ -1,6 +1,5 @@
 package com.nima.tuchemservicelabregistryapi.model;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 public class PersonGeneral extends Person {
@@ -9,6 +8,7 @@ public class PersonGeneral extends Person {
     private String profPersonnelCode;
     private Long profEduGroupId;
     private EduGroup profEduGroup;
+    private Long profGrantBalance;
     private String stdnCode;
     private Short stdnEduLevel;
     private Long stdnEduFieldId;
@@ -17,13 +17,14 @@ public class PersonGeneral extends Person {
 
     public PersonGeneral() {}
 
-    public PersonGeneral(Long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, Boolean gender, Boolean typeStdn, Boolean typeProf, Boolean typeLab, Boolean typeOrg, String labPersonnelCode, String labPost, String profPersonnelCode, Long profEduGroupId, EduGroup profEduGroup, String stdnCode, Short stdnLevel, Long stdnEduFieldId, EduField stdnEduField, List<Organization> orgRepOrganizations) {
+    public PersonGeneral(Long id, String nationalNumber, String firstName, String lastName, String phoneNumber, String email, Boolean gender, Boolean typeStdn, Boolean typeProf, Boolean typeLab, Boolean typeOrg, String labPersonnelCode, String labPost, String profPersonnelCode, Long profEduGroupId, EduGroup profEduGroup, Long profGrantBalance, String stdnCode, Short stdnLevel, Long stdnEduFieldId, EduField stdnEduField, List<Organization> orgRepOrganizations) {
         super(id, nationalNumber, firstName, lastName, phoneNumber, email, gender, typeStdn, typeProf, typeLab, typeOrg);
         this.labPersonnelCode = labPersonnelCode;
         this.labPost = labPost;
         this.profPersonnelCode = profPersonnelCode;
         this.profEduGroupId = profEduGroupId;
         this.profEduGroup = profEduGroup;
+        this.profGrantBalance = profGrantBalance;
         this.stdnCode = stdnCode;
         this.stdnEduLevel = stdnLevel;
         this.stdnEduFieldId = stdnEduFieldId;
@@ -69,6 +70,14 @@ public class PersonGeneral extends Person {
 
     public void setProfEduGroup(EduGroup profEduGroup) {
         this.profEduGroup = profEduGroup;
+    }
+
+    public Long getProfGrantBalance() {
+        return profGrantBalance;
+    }
+
+    public void setProfGrantBalance(Long profGrantBalance) {
+        this.profGrantBalance = profGrantBalance;
     }
 
     public String getStdnCode() {

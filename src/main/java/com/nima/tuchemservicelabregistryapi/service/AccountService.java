@@ -22,8 +22,13 @@ public class AccountService {
         this.organizationDAO = organizationDAO;
     }
 
-    public Data<Account> list(Data<Account> template) {
-        return null;
+    public Data<VAccount> list(Data<VAccount> options) {
+        Data<VAccount> list = accountDAO.getAll(options);
+        list.records.forEach(acc -> {
+            if (acc.getType() == 1) acc.setCustPerson(personDAO.getById(acc.getPersonCustomerId()));
+            else acc.setCustOrganization(organizationDAO.getById(acc.getOrganizationCustomerId()));
+        });
+        return list;
     }
 
     public List<VAccount> getAllOptions(String filter) {

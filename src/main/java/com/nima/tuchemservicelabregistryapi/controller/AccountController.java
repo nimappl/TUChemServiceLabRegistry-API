@@ -23,9 +23,9 @@ public class AccountController {
     }
 
     @GetMapping()
-    public ResponseEntity<Data<Account>> getAll(@RequestParam("queryParams") String queryParams) {
+    public ResponseEntity<Data<VAccount>> getAll(@RequestParam("queryParams") String queryParams) {
         ObjectMapper objectMapper = new ObjectMapper();
-        Data<Account> res;
+        Data<VAccount> res;
         try {
             res = objectMapper.readValue(queryParams, Data.class);
         } catch(JsonProcessingException ex) {

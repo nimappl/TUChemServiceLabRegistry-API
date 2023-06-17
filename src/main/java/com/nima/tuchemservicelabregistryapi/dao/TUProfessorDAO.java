@@ -27,6 +27,7 @@ public class TUProfessorDAO implements DAO<TUProfessor> {
         professor.setTypeOrg(rs.getBoolean("PTypeOrg"));
         professor.setPersonnelCode(rs.getString("ProfPersonnelCode"));
         professor.setEduGroupId((Long) rs.getObject("ProfEduGroupID"));
+        professor.setGrantBalance((Long) rs.getObject("ProfGrantBalance"));
         return professor;
     };
 
@@ -50,7 +51,7 @@ public class TUProfessorDAO implements DAO<TUProfessor> {
 
     public Data<TUProfessor> grantList(Data<TUProfessor> template) {
         template.count = jdbcTemplate.queryForObject(template.countQuery("vTUProfessor", "PersonID"), Integer.class);
-        template.records = jdbcTemplate.query(template.countQuery("vTUProfessor", "PersonID"), rowMapper);
+        template.records = jdbcTemplate.query(template.selectQuery("vTUProfessor", "PersonID"), rowMapper);
         template.records.forEach((TUProfessor professor) -> {
             if (professor.getEduGroupId() != 0) {
                 professor.setEduGroup(eduGroupDao.getById(professor.getEduGroupId()));
@@ -78,10 +79,16 @@ public class TUProfessorDAO implements DAO<TUProfessor> {
             jdbcTemplate.update("UPDATE TUProfessor SET ProfPersonnelCode=?, ProfEduGroupID=?, DDate=NULL WHERE PersonID=?",
                     professor.getPersonnelCode(), professor.getEduGroupId(), professor.getId());
         } else {
-            jdbcTemplate.update("INSERT INTO TUProfessor (PersonID, ProfPersonnelCode, ProfEduGroupID) VALUES (?, ?, ?)",
+            jdbcTemplate.update("INSERT INTO TUProfessor (PersonID, ProfPersonnelCode, ProfEduGroupID, ProfGrantBalance) VALUES (?, ?, ?, 0)",
                     professor.getId(), professor.getPersonnelCode(), professor.getEduGroupId());
         }
         return 1;
+    }
+
+    public void updateGrantBalance(long id, long amount) {
+        TUProfessor prof = jdbcTemplate.queryForObject("SELECT * FROM vTUProfessor WHERE PersonID=" + id, rowMapper);
+        amount += prof.getGrantBalance();
+        jdbcTemplate.update("UPDATE TUProfessor SET ProfGrantBalance=? WHERE PersonID=?", amount, id);
     }
 
     @Override

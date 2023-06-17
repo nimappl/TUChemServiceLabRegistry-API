@@ -75,18 +75,19 @@ public class PaymentDAO implements DAO<Payment> {
         int id = jdbcTemplate.queryForObject("EXECUTE CreatePayment ?, ?, ?, ?",
                 new Object[]{payment.getDate(), payment.getAmount(), payment.getType(), payment.getAccountId()}, Integer.class);
 
-        accountDAO.update(payment.getAccountId(), payment.getAmount() * -1);
-
         if (payment.getType() == 0) {
             jdbcTemplate.update("INSERT INTO PaymentCashBasis (PaymentID, CPmntType, CPmntTrackingNo) VALUES (?, ?, ?)",
                     id, payment.getCashBasisType(), payment.getCashBasisTrackingNo());
         } else if (payment.getType() == 1) {
             jdbcTemplate.update("INSERT INTO PaymentTUProfGrant (PaymentID, ProfessorID) VALUES (?, ?)",
                     id, payment.getGrantProfessorId());
+            professorDAO.updateGrantBalance(payment.getGrantProfessorId(), payment.getAmount());
         } else {
             jdbcTemplate.update("INSERT INTO PaymentLabsnetCredit (PaymentID, PLNCreditTitle, PLNTransactionCode) VALUES (?, ?, ?)",
                     id, payment.getLabsnetCreditTitle(), payment.getLabsnetTransactionCode());
         }
+
+        accountDAO.update(payment.getAccountId(), payment.getAmount() * -1);
         return 1;
     }
 

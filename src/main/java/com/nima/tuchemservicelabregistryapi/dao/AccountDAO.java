@@ -64,6 +64,12 @@ public class AccountDAO implements DAO<Account>{
         return null;
     }
 
+    public Data<VAccount> getAll(Data<VAccount> options) {
+        options.count = jdbcTemplate.queryForObject(options.countQuery("vCustomer", "AccountID"), Integer.class);
+        options.records = jdbcTemplate.query(options.selectQuery("vCustomer", "AccountID"), accOptRowMapper);
+        return options;
+    }
+
     public List<VAccount> getAllOptions(String filter) {
         String sql = "SELECT * FROM vCustomer " +
                 "WHERE CustomerName LIKE " + "'%" + filter + "%' " +

@@ -60,6 +60,7 @@ public class TestDAO implements DAO<Test> {
             test.setDiscounts(discountDao.discountsOfTest(test.getId()));
             test.setFees(testFeeDao.getByTestId(test.getId()));
             test.setSamplePreparations(testPrepDao.getByTestId(test.getId()));
+            test.setInstrument(instrumentDao.getById(test.getInstrumentId()));
         } catch (DataAccessException ex) {
             System.out.println("Item not found: " + id);
         }
